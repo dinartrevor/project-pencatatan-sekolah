@@ -1,0 +1,51 @@
+1. apa aplikasi/sistem yang mau dibuat?
+ 	sistem informasi akademik
+
+2. siapa yang mau memakai sistem?
+	admin
+	guru
+	siswa
+
+3. apa yang dilakukan admin di sistem?
+ 	- melakukan login
+	- mengelola data tahun ajaran
+	- mengelola data siswa
+	- mengelola data guru
+	- mengelola data mapel (tiap mapel ada kategorinya)
+	- mengelola data kelas (tiap kelas ada jenjang dan tahun angkatannya)
+	- mengelola kenaikan kelas
+	- mengelola data jenjang (TK,sd,smp)
+	- mengelola data mengajar (guru siapa yang memegang mapel apa tahun ajaran, kelas mana)
+	- mengelola data ipad
+	- mengelola data elearning
+	- melihat / cetak data nilai
+	- mengelola data siswa kelas(tiap kelas pada tahun ajaran terdapat beberapa siswa)
+
+4. apa yang dilakukan guru di sistem?
+	- melakukan login
+	- set tahun ajaran
+	- mengubah profil guru
+	- menginputkan nilai dari mata pelajaran yang diajar guru untuk siswa,
+
+5. apa yang dilakkan siswa disistem?
+	- melakukan login
+	- set tahun ajaran
+	- mengubah profil siswa
+	- melihat nilai
+
+6. seperti apa skema basis datanya?
+	- admin (id,username,password,nama)
+	- tahun (id_tahun, tahun ajaran)
+	- siswa (id_siswa, induk_siswa,pasword_siswa,nama_siswa, kelamin_siswa, foto_siswa, alamat_siswa)
+	- guru (id_guru, induk_guru ,password_guru,nama_guru, kelamin_guru, foto_guru, alamat_guru)
+	- kategori (id_kategori, nama_kategori)
+	- mapel (id_mapel, id_kategori,nama_mapel)
+	- mengajar (id_mengajar, id_guru, id_tahun, id_mapel, id_kelas, kkm)
+	- data ipad(id_ipad,namasiswa, serial_number, data_ipad, kelas)
+	- data elearning (id_username, id_password, nama siswa, kelas)
+	- siswakelas(id_siswakelas,id_siswa, id_kelas)
+	- nilai (id_nilai, id_mengajar,id_siswakelas,h1,h2,h3,h4,h5,h6,h7,h8,rph,pts,pas,hpap,pre,k1,k2,k3,k4,k5,k6,k7,k8,hpak,prek)
+
+
+
+

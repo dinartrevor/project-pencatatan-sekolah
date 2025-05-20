@@ -1,0 +1,12 @@
+{
+    "name": "sisfoalazcabta/sisfoalazcabta",
+    "description": "PHP native project.",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "phpoffice/phpspreadsheet": "^4.2"
+    },
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
