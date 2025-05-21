@@ -23,10 +23,14 @@ if(!$_SESSION['log']){
     <body class="sb-nav-fixed">
          <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.php">
-                <img src="assets/img/logoalazca.png" alt="Gambar" style="width:20%">
-                Al-Azhar Cairo Baturaja
-            </a>
+            <div class="d-flex">
+                <a class="navbar-brand" href="index.php">
+                    <img src="assets/img/logoalazca.png" alt="Gambar" style="width:20%">
+                    Al-Azhar Cairo Baturaja
+                </a>
+                <!-- Sidebar Toggle-->
+                <button class="btn btn-link btn-sm ps-5" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            </div>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
