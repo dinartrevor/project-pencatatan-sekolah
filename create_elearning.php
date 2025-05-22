@@ -27,6 +27,12 @@
                             <label for="kelas" class="form-label">Kelas</label>
                             <input type="text" class="form-control" name="kelas" id="kelas" autocomplete="off" placeholder="Kelas" required>
                         </div>
+                        <?php if($type == 'Guru'){ ?>
+                            <div class="col-md-12 mt-3">
+                                <label for="mapel" class="form-label">Mata Pelajaran</label>
+                                <input type="text" class="form-control" name="mapel" id="mapel" autocomplete="off" placeholder="Mata Pelajaran" required>
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -241,7 +241,7 @@ $stmt->close();
                             </div>
                             </div>
                             <div class="card-body">
-                                <table id="datatablesSimple" class="text-center">
+                                <table id="datatablesSimple">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
@@ -276,7 +276,12 @@ $stmt->close();
                                             <td><?= $data['konektivitas']; ?></td>
                                             <td><?= $data['storage']; ?></td>
                                             <td><?= $data['serial_number']; ?></td>
-                                            <td><?= $data['kode_restrict']; ?></td>
+                                            <td>
+                                                <span>*******</span>
+                                                <a href="javascript:void(0)" class="show-restrict text-muted" title="Lihat Kode Restrict" data-restrict="<?= $data['kode_restrict']; ?>">
+                                                    <i class="fas fa-eye-slash"></i>
+                                                </a>
+                                            </td>
                                             <td>
                                                 <a href="javascript:void(0)" data-url="<?= 'show_ipad_guru.php' ?>" data-id="<?= $data['id_apple'] ?>" class="edit btn btn-info btn-sm text-light "> <i class="fas fa-edit"></i></a>
                                                 <a href="javascript:void(0)" data-url="<?= 'delete_ipad_guru.php' ?>" data-id="<?= $data['id_apple'] ?>" class="delete btn btn-danger btn-sm"> <i class="fas fa-times"></i></a>
@@ -347,6 +352,22 @@ $stmt->close();
                         passwordSpan.text('*******');
                         $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
                         $(this).attr('title', 'Lihat Password');
+                    }
+                })
+
+                 $('#datatablesSimple tbody').on('click', '.show-restrict', function (e) {
+                    e.preventDefault();
+                    let restrictSpan = $(this).siblings('span');
+                    let restrict = $(this).data('restrict');
+
+                    if (restrictSpan.text() === '*******') {
+                        restrictSpan.text(restrict);
+                        $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+                        $(this).attr('title', 'Sembunyikan Kode Restrict');
+                    } else {
+                        restrictSpan.text('*******');
+                        $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+                        $(this).attr('title', 'Lihat Kode Restrict');
                     }
                 })
 

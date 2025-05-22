@@ -11168,7 +11168,7 @@ body {
 
 .datatable-table > thead > tr > th {
   vertical-align: bottom;
-  text-align: left;
+  text-align: center;
   border-bottom: none;
 }
 

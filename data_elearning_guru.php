@@ -11,12 +11,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_elearning'])) {
         $username_elearning = $_POST['username_elearning'];
         $password_elearning = $_POST['password_elearning'];
         $kelas = $_POST['kelas'];
+        $mapel = $_POST['mapel'];
 
         global $conn;
 
-        $insertSql = "INSERT INTO dataelearning (username_elearning, password_elearning, nama, kelas, type) VALUES (?, ?, ?, ?, ?)";
+        $insertSql = "INSERT INTO dataelearning (username_elearning, password_elearning, nama, kelas, type, mapel) VALUES (?, ?, ?, ?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("sssss", $username_elearning, $password_elearning, $nama, $kelas, $type);
+        $insertStmt->bind_param("ssssss", $username_elearning, $password_elearning, $nama, $kelas, $type, $mapel);
         $insertStmt->execute();
         $insertStmt->close();
 
@@ -38,10 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_elearning']) {
         $username_elearning = $_POST['username_elearning'];
         $password_elearning = $_POST['password_elearning'];
         $kelas = $_POST['kelas'];
+        $mapel = $_POST['mapel'];
 
-        $updateSql = "UPDATE dataelearning SET username_elearning=?, password_elearning=?, nama=?, kelas=? WHERE id_elearning=?";
+        $updateSql = "UPDATE dataelearning SET username_elearning=?, password_elearning=?, nama=?, kelas=?, mapel=? WHERE id_elearning=?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("ssssi", $username_elearning, $password_elearning, $nama, $kelas, $id);
+        $updateStmt->bind_param("sssssi", $username_elearning, $password_elearning, $nama, $kelas, $mapel, $id);
         $updateStmt->execute();
         $updateStmt->close();
 
@@ -231,13 +233,14 @@ $stmt->close();
                             </div>
                             </div>
                             <div class="card-body">
-                                <table id="datatablesSimple" class="text-center">
+                                <table id="datatablesSimple">
                                     <thead>
                                         <tr>
                                             <th>No</th>
                                             <th>Nama</th>
                                             <th>Username</th>
                                             <th>Password</th>
+                                            <th>Mata Pelajaran</th>
                                             <th>Kelas</th>
                                             <th>Action</th>
                                         </tr>
@@ -256,6 +259,7 @@ $stmt->close();
                                                     <i class="fas fa-eye-slash"></i>
                                                 </a>
                                             </td>
+                                            <td><?= $data['mapel']; ?></td>
                                             <td><?= $data['kelas']; ?></td>
                                             <td>
                                                 <a href="javascript:void(0)" data-url="<?= 'show_elearning.php' ?>" data-id="<?= $data['id_elearning'] ?>" class="edit btn btn-info btn-sm text-light "> <i class="fas fa-edit"></i></a>
@@ -349,6 +353,7 @@ $stmt->close();
                             $('#username_elearning_edit').val(data.username_elearning);
                             $('#password_edit').val(data.password_elearning);
                             $('#kelas_edit').val(data.kelas);
+                            $('#mapel_edit').val(data.mapel);
                             $('#modal-edit').modal('show');
                         }
                     })

@@ -337,7 +337,7 @@ $stmt->close();
                             </div>
                             </div>
                             <div class="card-body">
-                                <table id="datatablesSimple" class="text-center">
+                                <table id="datatablesSimple">
                                     <thead>
                                         <tr>
                                             <th>No</th>
