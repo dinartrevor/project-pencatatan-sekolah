@@ -16,12 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_apple'])) {
         $storage = $_POST['storage'];
         $serial_number = $_POST['serial_number'];
         $kode_restrict = $_POST['kode_restrict'];
+        $image = '';
+        if (!empty($_FILES['image']['name'])) {
+			$image = uploadImage($_FILES['image']);
+        }
        
         global $conn;
 
-        $insertSql = "INSERT INTO dataipad (nama, apple_id, password, no_handphone, tipe_ipad, konektivitas, storage, serial_number, kode_restrict, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertSql = "INSERT INTO dataipad (nama, apple_id, password, no_handphone, tipe_ipad, konektivitas, storage, serial_number, kode_restrict, type, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("ssssssssss", $nama, $apple_id, $password, $no_handphone, $tipe_ipad, $konektivitas, $storage, $serial_number, $kode_restrict, $type);
+        $insertStmt->bind_param("sssssssssss", $nama, $apple_id, $password, $no_handphone, $tipe_ipad, $konektivitas, $storage, $serial_number, $kode_restrict, $type, $image);
         $insertStmt->execute();
         $insertStmt->close();
 
@@ -48,10 +52,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_apple']) {
         $storage = $_POST['storage'];
         $serial_number = $_POST['serial_number'];
         $kode_restrict = $_POST['kode_restrict'];
+        
+        $getOldImageSql = "SELECT image FROM dataipad WHERE id_apple = ?";
+        $getOldImageStmt = $conn->prepare($getOldImageSql);
+        $getOldImageStmt->bind_param("i", $id);
+        $getOldImageStmt->execute();
+        $getOldImageResult = $getOldImageStmt->get_result();
+        $oldImageData = $getOldImageResult->fetch_assoc();
+        $oldImage = $oldImageData['image'];
+        $getOldImageStmt->close();
 
-        $updateSql = "UPDATE dataipad SET nama=?, apple_id=?, password=?, no_handphone=?, tipe_ipad=?, konektivitas=?, storage=?, serial_number=?, kode_restrict=?, type=? WHERE id_apple=?";
+        
+        if (!empty($_FILES['image']['name'])) {
+			$image = uploadImage($_FILES['image']);
+        }else{
+             $image = $oldImage;
+        }
+
+
+        $updateSql = "UPDATE dataipad SET nama=?, apple_id=?, password=?, no_handphone=?, tipe_ipad=?, konektivitas=?, storage=?, serial_number=?, kode_restrict=?, type=?, image=? WHERE id_apple=?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("ssssssssssi", $nama, $apple_id, $password, $no_handphone, $tipe_ipad, $konektivitas, $storage, $serial_number, $kode_restrict, $type, $id);
+        $updateStmt->bind_param("sssssssssssi", $nama, $apple_id, $password, $no_handphone, $tipe_ipad, $konektivitas, $storage, $serial_number, $kode_restrict, $type, $image, $id);
         $updateStmt->execute();
         $updateStmt->close();
 
@@ -64,6 +85,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_apple']) {
         $_SESSION['message_error'] = 'Error: ' . $e->getMessage();
         header("Location: data_ipad_guru.php");
         exit();
+    }
+}
+
+function uploadImage($file)
+{
+    $target_dir = "uploads/";
+	$randomString = str_replace('.', '', uniqid('', true));
+	$file_name = $randomString . '_' . uniqid() . '.' . pathinfo($file["name"], PATHINFO_EXTENSION);
+    $target_file = $target_dir .  $file_name;
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $check = getimagesize($file["tmp_name"]);
+	
+    if ($check !== false) {
+		$uploadOk = 1;
+    } else {
+		$uploadOk = 0;
+    }
+    if ($file["size"] > 3500000) {
+		$uploadOk = 0;
+    }
+    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+        $uploadOk = 0;
+    }
+
+    if ($uploadOk == 0) {
+        return '';
+    } else {
+        if (move_uploaded_file($file["tmp_name"], $target_file)) {
+            return $file_name;
+        } else {
+            return '';
+        }
     }
 }
 
@@ -100,6 +154,22 @@ $stmt->close();
         <style>
             .show-hide-password {
                 cursor: pointer;
+            }
+            .biodata-card {
+                padding: 20px;
+            }
+            .biodata-info p {
+                margin-bottom: 10px;
+                font-size: 1.1em;
+            }
+            .biodata-info strong {
+                color: #343a40;
+            }
+            
+            @media (max-width: 767.98px) {
+                .biodata-info h4 {
+                    text-align: center;
+                }
             }
             
         </style>
@@ -284,6 +354,7 @@ $stmt->close();
                                             </td>
                                             <td>
                                                 <a href="javascript:void(0)" data-url="<?= 'show_ipad_guru.php' ?>" data-id="<?= $data['id_apple'] ?>" class="edit btn btn-info btn-sm text-light "> <i class="fas fa-edit"></i></a>
+                                                <a href="javascript:void(0)" data-url="<?= 'show_ipad_guru.php' ?>" data-id="<?= $data['id_apple'] ?>" class="detail btn btn-primary btn-sm"> <i class="fas fa-search"></i></a>
                                                 <a href="javascript:void(0)" data-url="<?= 'delete_ipad_guru.php' ?>" data-id="<?= $data['id_apple'] ?>" class="delete btn btn-danger btn-sm"> <i class="fas fa-times"></i></a>
                                             </td>
                                         </tr>
@@ -298,6 +369,7 @@ $stmt->close();
                 </main>
                 <?php include 'create_ipad.php' ?>
                 <?php include 'edit_ipad.php' ?>
+                <?php include 'detail_ipad.php' ?>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
@@ -394,6 +466,37 @@ $stmt->close();
                             $('#storage_edit').val(data.storage);
                             $('#kode_restrict_edit').val(data.kode_restrict);
                             $('#modal-edit').modal('show');
+                        }
+                    })
+                    .fail(function () {
+                        console.log("error");
+                    });
+                });
+
+                $('#datatablesSimple tbody').on('click', '.detail', function () {
+                    let id = $(this).data('id');
+                    let url_hit = $(this).data('url');
+                    $.ajax({
+                        url: url_hit,
+                        type: 'GET',
+                        data : {
+                            id : id
+                        }
+                    }).done(function (response) {
+                       response = JSON.parse(response);
+                       if(response.status){
+                           let data = response.data;
+                            $('#t-nama').text(data.nama);
+                            $('#t-apple-id').text(data.apple_id);
+                            $('#t-password').text(data.password);
+                            $('#t-handphone').text(`${data.no_handphone}`);
+                            $('#t-type-ipad').text(data.tipe_ipad);
+                            $('#t-konektivitas').text(data.konektivitas);
+                            $('#t-storage').text(data.storage);
+                            $('#t-serial-number').text(data.serial_number);
+                            $('#t-kode-restrict').text(data.kode_restrict);
+                            $('#photo-profil').attr('src', `${'uploads/'+data.image}`)
+                            $('#modal-detail').modal('show');
                         }
                     })
                     .fail(function () {

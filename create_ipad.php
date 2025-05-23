@@ -47,6 +47,10 @@
                             <label for="kode_restrict" class="form-label">Kode Restrict</label>
                             <input type="text" class="form-control" name="kode_restrict" id="kode_restrict" autocomplete="off" placeholder="Kode Restrict" required>
                         </div>
+                        <div class="col-md-12 mt-3">
+                            <label for="image" class="form-label">Gambar</label>
+                            <input type="file" class="form-control" name="image" id="image" accept="image/*">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
