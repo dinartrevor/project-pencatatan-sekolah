@@ -30,7 +30,7 @@ if(isset($_POST['login'])){
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #4e73df, #224abe);
+            background-image: url('assets/img/background-sekolah.jpeg');
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             height: 100vh;
             display: flex;
