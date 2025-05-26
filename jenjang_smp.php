@@ -3,19 +3,28 @@ session_start();
 
 require_once 'function.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_guru'])) {
+$jenjang = 'SMP';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_siswa'])) {
     try {
-        $nama_guru = $_POST['nama_guru'];
-        $nik_guru = $_POST['nik_guru'];
-        $nomor_handphone = $_POST['nomor_handphone'];
-        $mapel = $_POST['mapel'];
-        $pendidikan_terakhir = $_POST['pendidikan_terakhir'];
-        $jabatan = $_POST['jabatan'];
-        $jenis_kelamin = $_POST['jenis_kelamin'];
-        $status = $_POST['status'];
+        $nama_siswa = $_POST['nama_siswa'];
+        $nis = $_POST['nis'];
+        $agama = $_POST['agama'];
         $tempat = $_POST['tempat'];
         $tanggal_lahir = $_POST['tanggal_lahir'];
-        $agama = $_POST['agama'];
+        $usia = $_POST['usia'];
+        $jenis_kelamin = $_POST['jenis_kelamin'];
+        $asal_sekolah = $_POST['asal_sekolah'];
+        $angkatan = $_POST['angkatan'];
+        $kelas = $_POST['kelas'];
+        $nama_ayah = $_POST['nama_ayah'];
+        $nama_ibu = $_POST['nama_ibu'];
+        $pekerjaan_ayah = $_POST['pekerjaan_ayah'];
+        $pekerjaan_ibu = $_POST['pekerjaan_ibu'];
+        $no_handphone_ayah = $_POST['no_handphone_ayah'];
+        $no_handphone_ibu = $_POST['no_handphone_ibu'];
+        $anak_ke = $_POST['anak_ke'];
+        $jumlah_saudara = $_POST['jumlah_saudara'];
+        $alamat = $_POST['alamat'];
         $image = '';
         if (!empty($_FILES['image']['name'])) {
 			$image = uploadImage($_FILES['image']);
@@ -23,60 +32,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_guru'])) {
 
         global $conn;
 
-        $sql = "SELECT guru.id_guru FROM guru WHERE guru.nik_guru = ?";
+        $sql = "SELECT siswa.id_siswa FROM siswa WHERE siswa.nis = ?";
 		$stmt = $conn->prepare($sql);
 		$stmt->bind_param("s", $nik_guru);
 		$stmt->execute();
 
 		$result = $stmt->get_result();
-		$guruExsist = $result->fetch_assoc();
+		$siswaExsist = $result->fetch_assoc();
 		$stmt->close();
 		
-        if(!empty($guruExsist['id_guru'])){
-            $_SESSION['message_error'] = 'Nik Sudah Ada';
-            header("Location: data_guru.php");
+        if(!empty($siswaExsist['id_siswa'])){
+            $_SESSION['message_error'] = 'NIS Sudah Ada';
+            header("Location: jenjang_tka.php");
             exit();
         }
 
-        $insertSql = "INSERT INTO guru (nama_guru, nik_guru, nomor_handphone, mapel, pendidikan_terakhir, jabatan, jenis_kelamin, status, tempat, tanggal_lahir, agama, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertSql = "INSERT INTO siswa (nama_siswa, nis, agama, tempat, tanggal_lahir, umur, jenis_kelamin, asal_sekolah, angkatan, kelas, nama_ayah, nama_ibu, pekerjaan_ayah, pekerjaan_ibu, no_handphone_ayah, no_handphone_ibu, anak_ke, jumlah_saudara, alamat_lengkap, photo, jenjang) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("ssssssssssss", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image);
+        $insertStmt->bind_param(
+            "sssssssssssssssssssss",
+            $nama_siswa,
+            $nis,
+            $agama,
+            $tempat,
+            $tanggal_lahir,
+            $usia,
+            $jenis_kelamin,
+            $asal_sekolah,
+            $angkatan,
+            $kelas,
+            $nama_ayah,
+            $nama_ibu,
+            $pekerjaan_ayah,
+            $pekerjaan_ibu,
+            $no_handphone_ayah,
+            $no_handphone_ibu,
+            $anak_ke,
+            $jumlah_saudara,
+            $alamat,
+            $image,
+            $jenjang
+        );
         $insertStmt->execute();
         $insertStmt->close();
 
-        $_SESSION['message_success'] = 'Data User Berhasil ditambahkan';
-        header("Location: data_guru.php");
+        $_SESSION['message_success'] = 'Data Siswa Berhasil ditambahkan';
+        header("Location: jenjang_smp.php");
         exit();
 
     } catch (Exception $e) {
+       
         $_SESSION['message_error'] = 'Error: ' . $e->getMessage();
-        header("Location: data_guru.php");
+        header("Location: jenjang_smp.php");
         exit();
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_guru']) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_siswa']) {
     try {
-        $id = $_POST['id_guru'];
-        $nama_guru = $_POST['nama_guru'];
-        $nik_guru = $_POST['nik_guru'];
-        $nomor_handphone = $_POST['nomor_handphone'];
-        $mapel = $_POST['mapel'];
-        $pendidikan_terakhir = $_POST['pendidikan_terakhir'];
-        $jabatan = $_POST['jabatan'];
-        $jenis_kelamin = $_POST['jenis_kelamin'];
-        $status = $_POST['status'];
+        $id = $_POST['id_siswa'];
+        $nama_siswa = $_POST['nama_siswa'];
+        $nis = $_POST['nis'];
+        $agama = $_POST['agama'];
         $tempat = $_POST['tempat'];
         $tanggal_lahir = $_POST['tanggal_lahir'];
-        $agama = $_POST['agama'];
+        $usia = $_POST['usia'];
+        $jenis_kelamin = $_POST['jenis_kelamin'];
+        $asal_sekolah = $_POST['asal_sekolah'];
+        $angkatan = $_POST['angkatan'];
+        $kelas = $_POST['kelas'];
+        $nama_ayah = $_POST['nama_ayah'];
+        $nama_ibu = $_POST['nama_ibu'];
+        $pekerjaan_ayah = $_POST['pekerjaan_ayah'];
+        $pekerjaan_ibu = $_POST['pekerjaan_ibu'];
+        $no_handphone_ayah = $_POST['no_handphone_ayah'];
+        $no_handphone_ibu = $_POST['no_handphone_ibu'];
+        $anak_ke = $_POST['anak_ke'];
+        $jumlah_saudara = $_POST['jumlah_saudara'];
+        $alamat = $_POST['alamat'];
 
-        $getOldImageSql = "SELECT image FROM guru WHERE id_guru = ?";
+        $getOldImageSql = "SELECT photo FROM siswa WHERE id_siswa = ?";
         $getOldImageStmt = $conn->prepare($getOldImageSql);
         $getOldImageStmt->bind_param("i", $id);
         $getOldImageStmt->execute();
         $getOldImageResult = $getOldImageStmt->get_result();
         $oldImageData = $getOldImageResult->fetch_assoc();
-        $oldImage = $oldImageData['image'];
+        $oldImage = $oldImageData['photo'];
         $getOldImageStmt->close();
 
         
@@ -86,21 +127,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_guru']) {
              $image = $oldImage;
         }
 
-
-        $updateSql = "UPDATE guru SET nama_guru=?, nik_guru=?, nomor_handphone=?, mapel=?, pendidikan_terakhir=?, jabatan=?, jenis_kelamin=?, status=?, tempat=?, tanggal_lahir=?, agama=?, image=? WHERE id_guru=?";
+        $updateSql = "UPDATE siswa SET nama_siswa=?, nis=?, agama=?, tempat=?, tanggal_lahir=?, umur=?, jenis_kelamin=?, asal_sekolah=?, angkatan=?, kelas=?, nama_ayah=?, nama_ibu=?, pekerjaan_ayah=?, pekerjaan_ibu=?, no_handphone_ayah=?, no_handphone_ibu=?, anak_ke=?, jumlah_saudara=?, alamat_lengkap=?, photo=? WHERE id_siswa=?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("ssssssssssssi", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $id);
+        $updateStmt->bind_param(
+            "ssssssssssssssssssssi",
+            $nama_siswa,
+            $nis,
+            $agama,
+            $tempat,
+            $tanggal_lahir,
+            $usia,
+            $jenis_kelamin,
+            $asal_sekolah,
+            $angkatan,
+            $kelas,
+            $nama_ayah,
+            $nama_ibu,
+            $pekerjaan_ayah,
+            $pekerjaan_ibu,
+            $no_handphone_ayah,
+            $no_handphone_ibu,
+            $anak_ke,
+            $jumlah_saudara,
+            $alamat,
+            $image,
+            $id
+        );
         $updateStmt->execute();
         $updateStmt->close();
 
 
-        $_SESSION['message_success'] = 'Data User Berhasil diubah';
-        header("Location: data_guru.php");
+        $_SESSION['message_success'] = 'Data Siswa Berhasil diubah';
+        header("Location: jenjang_smp.php");
         exit();
 
     } catch (Exception $e) {
+
         $_SESSION['message_error'] = 'Error: ' . $e->getMessage();
-        header("Location: data_guru.php");
+        header("Location: jenjang_smp.php");
         exit();
     }
 }
@@ -138,13 +202,14 @@ function uploadImage($file)
     }
 }
 
-$sql = "SELECT * FROM guru";
+$sql = "SELECT * FROM siswa WHERE jenjang = ?";
 $stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $jenjang);
 $stmt->execute();
 $result = $stmt->get_result();
-$dataGuru = [];
+$dataSiswa = [];
 while ($row = $result->fetch_assoc()) {
-    $dataGuru[] = $row;
+    $dataSiswa[] = $row;
 }
 
 $stmt->close();
@@ -175,11 +240,11 @@ $stmt->close();
                 position: relative;
             }
             .profile-img {
-                width: 200px;
-                height: 200px;
-                border-radius: 50%;
+                width: 400px;
+                height: 400px;
+                border-radius: 20%;
                 object-fit: cover;
-                border: 5px solid #007bff; /* Border warna primary Bootstrap */
+                border: 5px solid rgb(125, 184, 246); /* Border warna primary Bootstrap */
                 box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
             }
             .biodata-info p {
@@ -263,7 +328,7 @@ $stmt->close();
                                 </a>
                                 <div class="collapse" id="collapseSiswa" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="jenjang_tka.php">Jenjang B</a>
+                                        <a class="nav-link" href="jenjang_tka.php">Jenjang TK-A</a>
                                         <a class="nav-link" href="jenjang_tkb.php">Jenjang TK-B</a>
                                         <a class="nav-link" href="jenjang_sd.php">Jenjang SD</a>
                                         <a class="nav-link" href="jenjang_sd_g2.php">Jenjang SD(Grade 2)</a>
@@ -316,7 +381,7 @@ $stmt->close();
                     <div class="container-fluid px-4">
                         <h1 class="mt-4">Data Siswa Jenjang SMP</h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="data_guru.php"> Siswa Jenjang SMP</a></li>
+                            <li class="breadcrumb-item"><a href="jenjang_smp.php"> Siswa Jenjang SMP</a></li>
                             <li class="breadcrumb-item active">List Siswa Jenjang SMP</li>
                         </ol>
                         <div class="card mb-4">
@@ -329,7 +394,7 @@ $stmt->close();
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-create">
                                            <i class="fas fa-plus"></i> Tambah Data Siswa Jenjang SMP
                                         </button>
-                                        <a href="<?= 'export_guru.php' ?>" id="exportExcelBtn" class="btn btn-success">
+                                        <a href="<?= 'export_siswa.php?type='.$jenjang.'' ?>" id="exportExcelBtn" class="btn btn-success">
                                            <i class="fa fa-file-excel"></i> Export to Excel
                                         </a>
                                  </div>
@@ -342,34 +407,30 @@ $stmt->close();
                                         <tr>
                                             <th>No</th>
                                             <th>Nama</th>
-                                            <th>NIK Guru</th>
-                                            <th>No.Handphone</th>
-                                            <th>Mapel</th>
-                                            <th>Pendidikan Terakhir</th>
-                                            <th>Jabatan</th>
+                                            <th>NIS</th>
+                                            <th>Kelas</th>
+                                            <th>Tanggal Lahir</th>
+                                            <th>Usia</th>
                                             <th>Jenis Kelamin</th>
-                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                            foreach ($dataGuru as $key => $data) {
+                                            foreach ($dataSiswa as $key => $data) {
                                         ?>
                                         <tr>
                                             <td><?= $key + 1; ?></td>
-                                            <td><?= $data['nama_guru']; ?></td>
-                                            <td><?= $data['nik_guru']; ?></td>
-                                            <td><?= $data['nomor_handphone']; ?></td>
-                                            <td><?= $data['mapel']; ?></td>
-                                            <td><?= $data['pendidikan_terakhir']; ?></td>
-                                            <td><?= $data['jabatan']; ?></td>
+                                            <td><?= $data['nama_siswa']; ?></td>
+                                            <td><?= $data['nis']; ?></td>
+                                            <td><?= $data['kelas']; ?></td>
+                                            <td><?= $data['tanggal_lahir'] ? date('d-m-Y', strtotime($data['tanggal_lahir'])) : '-'; ?></td>
+                                            <td><?= $data['umur']; ?></td>
                                             <td><?= $data['jenis_kelamin']; ?></td>
-                                            <td><?= $data['status']; ?></td>
                                             <td>
-                                                <a href="javascript:void(0)" data-url="<?= 'show_guru.php' ?>" data-id="<?= $data['id_guru'] ?>" class="edit btn btn-info btn-sm text-light "> <i class="fas fa-edit"></i></a>
-                                                 <a href="javascript:void(0)" data-url="<?= 'show_guru.php' ?>" data-id="<?= $data['id_guru'] ?>" class="detail btn btn-primary btn-sm"> <i class="fas fa-search"></i></a>
-                                                <a href="javascript:void(0)" data-url="<?= 'delete_guru.php' ?>" data-id="<?= $data['id_guru'] ?>" class="delete btn btn-danger btn-sm"> <i class="fas fa-times"></i></a>
+                                                <a href="javascript:void(0)" data-url="<?= 'show_siswa.php' ?>" data-id="<?= $data['id_siswa'] ?>" class="edit btn btn-info btn-sm text-light "> <i class="fas fa-edit"></i></a>
+                                                 <a href="javascript:void(0)" data-url="<?= 'show_siswa.php' ?>" data-id="<?= $data['id_siswa'] ?>" class="detail btn btn-primary btn-sm"> <i class="fas fa-search"></i></a>
+                                                <a href="javascript:void(0)" data-url="<?= 'delete_siswa.php' ?>" data-id="<?= $data['id_siswa'] ?>" class="delete btn btn-danger btn-sm"> <i class="fas fa-times"></i></a>
                                             </td>
                                         </tr>
                                         <?php
@@ -381,9 +442,9 @@ $stmt->close();
                         </div>
                     </div>
                 </main>
-                <?php include 'create_guru.php' ?>
-                <?php include 'edit_guru.php' ?>
-                <?php include 'detail_guru.php' ?>
+                <?php include 'create_siswa.php' ?>
+                <?php include 'edit_siswa.php' ?>
+                <?php include 'detail_siswa.php' ?>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
@@ -412,6 +473,24 @@ $stmt->close();
                     <?php unset($_SESSION['message_success']); ?>
                 <?php endif; ?>
 
+                $(".tanggal_lahir").on('change', function(e){
+                    e.preventDefault();
+                    const value = $(this).val();
+                    if (value) {
+                        const birthDate = new Date(value);
+                        const today = new Date();
+                        let age = today.getFullYear() - birthDate.getFullYear();
+                        const m = today.getMonth() - birthDate.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                            age--;
+                        }
+                        if (age < 0) {
+                            age = 0;
+                        }
+                        $(".usia").val(age);
+                    }
+                });
+
                 $('#datatablesSimple tbody').on('click', '.edit', function () {
                     let id = $(this).data('id');
                     let url_hit = $(this).data('url');
@@ -426,22 +505,28 @@ $stmt->close();
                        if(response.status){
                             let data = response.data;
                             let roles = response.roles;
-                            $('#id_guru_edit').val(data.id_guru);
-                            $('#nama_guru_edit').val(data.nama_guru);
-                            $('#nik_guru_edit').val(data.nik_guru);
-                            $('#nomor_handphone_edit').val(data.nomor_handphone);
-                            $('#mapel_edit').val(data.mapel);
-                            $('#pendidikan_terakhir_edit').val(data.pendidikan_terakhir);
-                            $('#jabatan_edit').val(data.jabatan);
+                            $('#id_siswa_edit').val(data.id_siswa);
+                            $('#nama_siswa_edit').val(data.nama_siswa);
+                            $('#nis_edit').val(data.nis);
                             $('#tempat_edit').val(data.tempat);
                             $('#tanggal_lahir_edit').val(data.tanggal_lahir);
+                            $('#usia_edit').val(data.umur);
                             $('#agama_edit').val(data.agama);
+                            $('#asal_sekolah_edit').val(data.asal_sekolah);
+                            $('#angkatan_edit').val(data.angkatan);
+                            $('#kelas_edit').val(data.kelas);
+                            $('#nama_ayah_edit').val(data.nama_ayah);
+                            $('#no_handphone_ayah_edit').val(data.no_handphone_ayah);
+                            $('#nama_ibu_edit').val(data.nama_ibu);
+                            $('#no_handphone_ibu_edit').val(data.no_handphone_ibu);
+                            $('#pekerjaan_ayah_edit').val(data.pekerjaan_ayah);
+                            $('#pekerjaan_ibu_edit').val(data.pekerjaan_ibu);
+                            $('#anak_ke_edit').val(data.anak_ke);
+                            $('#jumlah_saudara_edit').val(data.jumlah_saudara);
+                            $('#alamat_edit').val(data.alamat_lengkap);
                             let html_jenis_kelamin = `<option value="Laki-Laki" ${data.jenis_kelamin == 'Laki-Laki' ? 'selected' : ''}>Laki-Laki</option>`;
                                 html_jenis_kelamin += `<option value="Perempuan" ${data.jenis_kelamin == 'Perempuan' ? 'selected' : ''}>Perempuan</option>`;
-                            let html_status = `<option value="Menikah" ${data.status == 'Menikah' ? 'selected' : ''}>Menikah</option>`;
-                                html_status += `<option value="Belum Menikah" ${data.status == 'Belum Menikah' ? 'selected' : ''}>Belum Menikah</option>`;
                             $('#jenis_kelamin_edit').html(html_jenis_kelamin);
-                            $('#status_edit').html(html_status);
                             $('#modal-edit').modal('show');
                         }
                     })
@@ -470,17 +555,27 @@ $stmt->close();
                             month = (month < 10) ? '0' + month : month;
                             let formattedTanggal = `${day}/${month}/${year}`;
                             
-                            $('#id_guru_edit').val(data.id_guru);
-                            $('#t-nama').text(data.nama_guru);
-                            $('#t-nik').text(data.nik_guru);
-                            $('#t-nama-guru').text(data.nama_guru);
+                            $('#id_siswa_edit').val(data.id_siswa);
+                            $('#t-nama').text(data.nama_siswa);
+                            $('#t-nama-siswa').text(data.nama_siswa);
+                            $('#t-nis').text(data.nis);
+                            $('#t-jenis-kelamin').text(data.jenis_kelamin);
                             $('#t-ttl').text(`${data.tempat}, ${formattedTanggal}`);
-                            $('#t-handphone').text(data.nomor_handphone);
-                            $('#t-mapel').text(data.mapel);
-                            $('#t-pendidikan').text(data.pendidikan_terakhir);
-                            $('#t-jabatan').text(data.jabatan);
+                            $('#t-usia').text(data.umur);
                             $('#t-agama').text(data.agama);
-                            $('#photo-profil').attr('src', `${'uploads/'+data.image}`)
+                            $('#t-asal-sekolah').text(data.asal_sekolah);
+                            $('#t-angkatan').text(data.angkatan);
+                            $('#t-kelas').text(data.kelas);
+                            $('#t-nama-ayah').text(data.nama_ayah);
+                            $('#t-handphone-ayah').text(data.no_handphone_ayah);
+                            $('#t-pekerjaan-ayah').text(data.pekerjaan_ayah);
+                            $('#t-nama-ibu').text(data.nama_ibu);
+                            $('#t-handphone-ibu').text(data.no_handphone_ibu);
+                            $('#t-pekerjaan-ibu').text(data.pekerjaan_ibu);
+                            $('#t-anak-ke').text(data.anak_ke);
+                            $('#t-jumlah-saudara').text(data.jumlah_saudara);
+                            $('#t-alamat').text(data.alamat_lengkap);
+                            $('#photo-profil').attr('src', `${'uploads/'+data.photo}`)
                             $('#modal-detail').modal('show');
                         }
                     })
