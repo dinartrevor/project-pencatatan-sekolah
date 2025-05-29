@@ -3,6 +3,16 @@ session_start();
 
 require_once 'function.php';
 
+$sql = "SELECT * FROM jenjang";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$dataJenjang = [];
+while ($row = $result->fetch_assoc()) {
+    $dataJenjang[] = $row;
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_guru'])) {
     try {
         $nama_guru = $_POST['nama_guru'];
@@ -16,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_guru'])) {
         $tempat = $_POST['tempat'];
         $tanggal_lahir = $_POST['tanggal_lahir'];
         $agama = $_POST['agama'];
+        $kelas_id = $_POST['kelas_id'];
         $image = '';
         if (!empty($_FILES['image']['name'])) {
 			$image = uploadImage($_FILES['image']);
@@ -38,9 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_guru'])) {
             exit();
         }
 
-        $insertSql = "INSERT INTO guru (nama_guru, nik_guru, nomor_handphone, mapel, pendidikan_terakhir, jabatan, jenis_kelamin, status, tempat, tanggal_lahir, agama, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertSql = "INSERT INTO guru (nama_guru, nik_guru, nomor_handphone, mapel, pendidikan_terakhir, jabatan, jenis_kelamin, status, tempat, tanggal_lahir, agama, image, kelas_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("ssssssssssss", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image);
+        $insertStmt->bind_param("ssssssssssssi", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id);
         $insertStmt->execute();
         $insertStmt->close();
 
@@ -69,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_guru']) {
         $tempat = $_POST['tempat'];
         $tanggal_lahir = $_POST['tanggal_lahir'];
         $agama = $_POST['agama'];
+        $kelas_id = $_POST['kelas_id'];
 
         $getOldImageSql = "SELECT image FROM guru WHERE id_guru = ?";
         $getOldImageStmt = $conn->prepare($getOldImageSql);
@@ -87,9 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_guru']) {
         }
 
 
-        $updateSql = "UPDATE guru SET nama_guru=?, nik_guru=?, nomor_handphone=?, mapel=?, pendidikan_terakhir=?, jabatan=?, jenis_kelamin=?, status=?, tempat=?, tanggal_lahir=?, agama=?, image=? WHERE id_guru=?";
+        $updateSql = "UPDATE guru SET nama_guru=?, nik_guru=?, nomor_handphone=?, mapel=?, pendidikan_terakhir=?, jabatan=?, jenis_kelamin=?, status=?, tempat=?, tanggal_lahir=?, agama=?, image=?, kelas_id=? WHERE id_guru=?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("ssssssssssssi", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $id);
+        $updateStmt->bind_param("ssssssssssssii", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id, $id);
         $updateStmt->execute();
         $updateStmt->close();
 
@@ -243,6 +255,17 @@ $stmt->close();
                                     Dashboard
                                 </a>
                                 <div class="sb-sidenav-menu-heading">Management Account</div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMasterData" aria-expanded="false" aria-controls="collapseMasterData">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                        Master Data
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseMasterData" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="data_jenjang.php">Data Jenjang</a>
+                                        <a class="nav-link" href="data_kelas.php">Data Kelas</a>
+                                    </nav>
+                                </div>
                                 <!-- Data Guru -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGuru" aria-expanded="false" aria-controls="collapseGuru">
                                     <div class="sb-nav-link-icon"><i class="fas fa-chalkboard-teacher"></i></div>
@@ -312,6 +335,7 @@ $stmt->close();
                 </nav>
             </div>
             <div id="layoutSidenav_content">
+                <input type="hidden" id="kelas_selected">
                 <main>
                     <div class="container-fluid px-4">
                         <h1 class="mt-4">Data Guru</h1>
@@ -424,8 +448,8 @@ $stmt->close();
                     }).done(function (response) {
                        response = JSON.parse(response);
                        if(response.status){
-                            let data = response.data;
-                            let roles = response.roles;
+                            let data = response.data.guru;
+                            let jenjang = response.data.jenjang;
                             $('#id_guru_edit').val(data.id_guru);
                             $('#nama_guru_edit').val(data.nama_guru);
                             $('#nik_guru_edit').val(data.nik_guru);
@@ -440,8 +464,18 @@ $stmt->close();
                                 html_jenis_kelamin += `<option value="Perempuan" ${data.jenis_kelamin == 'Perempuan' ? 'selected' : ''}>Perempuan</option>`;
                             let html_status = `<option value="Menikah" ${data.status == 'Menikah' ? 'selected' : ''}>Menikah</option>`;
                                 html_status += `<option value="Belum Menikah" ${data.status == 'Belum Menikah' ? 'selected' : ''}>Belum Menikah</option>`;
+
+                            let html = `<option value="">Pilih Jenjang</option>`;
+                            if(jenjang.length > 0){
+                                 jenjang.forEach(value => {
+                                    html += `<option value="${value.id}" ${value.id == data.jenjang_id ? 'selected' : ''}>${value.name}</option>`;
+                                });
+                            }
                             $('#jenis_kelamin_edit').html(html_jenis_kelamin);
+                            $('#jenjang_id_edit').html(html);
                             $('#status_edit').html(html_status);
+                            $('#kelas_selected').val(data.kelas_id);
+                            $(".jenjang_id").trigger("change");
                             $('#modal-edit').modal('show');
                         }
                     })
@@ -461,7 +495,7 @@ $stmt->close();
                     }).done(function (response) {
                        response = JSON.parse(response);
                        if(response.status){
-                            let data = response.data;
+                            let data = response.data.guru;
                             let tanggalLahir = new Date(data.tanggal_lahir);
                             let day = tanggalLahir.getDate();
                             let month = tanggalLahir.getMonth() + 1;
@@ -480,6 +514,8 @@ $stmt->close();
                             $('#t-pendidikan').text(data.pendidikan_terakhir);
                             $('#t-jabatan').text(data.jabatan);
                             $('#t-agama').text(data.agama);
+                            $('#t-jenjang').text(data.nama_jenjang);
+                            $('#t-kelas').text(data.nama_kelas);
                             $('#photo-profil').attr('src', `${'uploads/'+data.image}`)
                             $('#modal-detail').modal('show');
                         }
@@ -526,6 +562,32 @@ $stmt->close();
                             }
                             });
                         }
+                    });
+                });
+
+                $(".jenjang_id").on("change", function(e){
+                    e.preventDefault();
+                    const valueJenjang = $(this).val();
+                    $.ajax({
+                        url: 'get_kelas.php',
+                        type: 'GET',
+                        data : {
+                            jenjang_id : valueJenjang
+                        }
+                    }).done(function (response) {
+                       response = JSON.parse(response);
+                       if(response.status){
+                            let data = response.data;
+                            let html = `<option value="">Pilih Kelas</option>`;
+                            let kelas_id = $("#kelas_selected").val();
+                            data.forEach(value => {
+                                html += `<option value="${value.id}" ${kelas_id == value.id ? 'selected' : ''}>${value.name}</option>`;
+                            });
+                            $(".kelas_id").html(html);
+                        }
+                    })
+                    .fail(function () {
+                        console.log("error");
                     });
                 });
             });

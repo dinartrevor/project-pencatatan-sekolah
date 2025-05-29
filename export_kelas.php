@@ -8,12 +8,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Font;
 
-$sql = "SELECT guru.id_guru, guru.nama_guru, guru.nik_guru, guru.mapel, guru.pendidikan_terakhir,
-            guru.jenis_kelamin, guru.nomor_handphone, guru.jabatan,  guru.status, guru.tempat, guru.tanggal_lahir,
-            guru.agama, guru.image, guru.kelas_id, kelas.name as nama_kelas, jenjang.id as jenjang_id, jenjang.name as nama_jenjang
-            FROM guru
-            INNER JOIN kelas ON guru.kelas_id = kelas.id
-            INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id";
+$sql = "SELECT kelas.id, kelas.name, jenjang.name as jenjang_name FROM kelas INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -21,7 +16,6 @@ $data = [];
 while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
-
 $stmt->close();
 
 // Buat objek Spreadsheet baru
@@ -29,7 +23,7 @@ $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
 // Definisikan header kolom (Bahasa Indonesia)
-$header = ['No', 'Nama Guru', 'NIK', 'Tempat Lahir', 'Tanggal Lahir', 'Agama', 'No. Handphone', 'Mata Pelajaran','Pendidikan Terakhir', 'Jenjang', 'Kelas', 'Jabatan', 'Jenis Kelamin', 'Status']; // Contoh header, sesuaikan dengan kolom tabel Anda
+$header = ['No', 'Nama Jenjang', 'Nama Kelas'];
 $headerRow = 1; // Baris untuk header
     
 
@@ -47,19 +41,8 @@ foreach ($data as $key => $row) {
     $col = 'A';
     $rowDataToWrite = [];
     $rowDataToWrite[] = $key + 1;
-    $rowDataToWrite[] = $row['nama_guru'];
-    $rowDataToWrite[] = $row['nik_guru'];
-    $rowDataToWrite[] = $row['tempat'];
-    $rowDataToWrite[] = date('d-m-Y', strtotime($row['tanggal_lahir']));
-    $rowDataToWrite[] = $row['agama'];
-    $rowDataToWrite[] = $row['nomor_handphone'];
-    $rowDataToWrite[] = $row['mapel'];
-    $rowDataToWrite[] = $row['pendidikan_terakhir'];
-    $rowDataToWrite[] = $row['nama_jenjang'];
-    $rowDataToWrite[] = $row['nama_kelas'];
-    $rowDataToWrite[] = $row['jabatan'];
-    $rowDataToWrite[] = $row['jenis_kelamin'];
-    $rowDataToWrite[] = $row['status'];
+    $rowDataToWrite[] = $row['jenjang_name'];
+    $rowDataToWrite[] = $row['name'];
     foreach ($rowDataToWrite as $value) {
         $sheet->setCellValue($col . $rowNumber, $value);
         $col++;
@@ -74,7 +57,7 @@ foreach (range('A', $sheet->getHighestColumn()) as $col) {
 
 
 // Nama file Excel yang akan dihasilkan
-$filename = 'Data_Guru_' . date('YmdHis') . '.xlsx';
+$filename = 'Data_Kelas_' . date('YmdHis') . '.xlsx';
 
 // Set header untuk mengunduh file
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

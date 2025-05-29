@@ -20,6 +20,8 @@
                                     <p><strong>Pendidikan Terakhir:</strong> <span id="t-pendidikan"></span></p>
                                     <p><strong>Jabatan:</strong> <span id="t-jabatan"></span></p>
                                     <p><strong>Agama:</strong> <span id="t-agama"></span></p>
+                                    <p><strong>Jenjang:</strong> <span id="t-jenjang"></span></p>
+                                    <p><strong>Kelas:</strong> <span id="t-kelas"></span></p>
                                     
                                 </div>
 

@@ -7,7 +7,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $id = $_GET['id'];
         global $conn;
-        $sql = "SELECT * from guru WHERE guru.id_guru = ?";
+        $sql = "SELECT guru.id_guru, guru.nama_guru, guru.nik_guru, guru.mapel, guru.pendidikan_terakhir,
+            guru.jenis_kelamin, guru.nomor_handphone, guru.jabatan,  guru.status, guru.tempat, guru.tanggal_lahir,
+            guru.agama, guru.image, guru.kelas_id, kelas.name as nama_kelas, jenjang.id as jenjang_id, jenjang.name as nama_jenjang
+            FROM guru
+            INNER JOIN kelas ON guru.kelas_id = kelas.id
+            INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id
+            WHERE guru.id_guru = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $id);
         $stmt->execute();
@@ -15,10 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
         $stmt->close();
+
+        $sql = "SELECT * FROM jenjang";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $dataJenjang = [];
+        while ($row = $result->fetch_assoc()) {
+            $dataJenjang[] = $row;
+        }
+
         $response = [
             "message" => "Data Berhasil",
             "status" => true,
-            "data" => $user,
+            "data" => ['jenjang' => $dataJenjang, 'guru' => $user],
         ];
         echo json_encode($response);
     } catch (Exception $e) {

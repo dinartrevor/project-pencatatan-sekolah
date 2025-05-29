@@ -308,6 +308,17 @@ $stmt->close();
                                     Dashboard
                                 </a>
                                 <div class="sb-sidenav-menu-heading">Management Account</div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMasterData" aria-expanded="false" aria-controls="collapseMasterData">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                        Master Data
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseMasterData" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="data_jenjang.php">Data Jenjang</a>
+                                        <a class="nav-link" href="data_kelas.php">Data Kelas</a>
+                                    </nav>
+                                </div>
                                 <!-- Data Guru -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGuru" aria-expanded="false" aria-controls="collapseGuru">
                                     <div class="sb-nav-link-icon"><i class="fas fa-chalkboard-teacher"></i></div>
