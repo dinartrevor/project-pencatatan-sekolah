@@ -4,6 +4,16 @@ session_start();
 if(!$_SESSION['log']){
     header('location: login.php');
 }
+
+$sql = "SELECT * FROM jenjang";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$dataJenjang = [];
+while ($row = $result->fetch_assoc()) {
+    $dataJenjang[] = $row;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -15,10 +25,15 @@ if(!$_SESSION['log']){
         <meta name="description" content=" Al-Azhar Cairo Baturaja" />
         <meta name="author" content=" Al-Azhar Cairo Baturaja" />
         <title>Dashboard</title>
+          <link rel="shortcut icon" href="assets/img/logoalazca.png" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
+        <style>
+            .hidden{
+                display: none;
+            }
+        </style>
     </head>
     <body class="sb-nav-fixed">
          <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -217,6 +232,79 @@ if(!$_SESSION['log']){
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="card">
+                                 <div class="card mt-4">
+                                    <div class="card-header">
+                                       <h4 class="card-title">Data Siswa & Guru</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mt-3">
+                                            <label for="jenjang_id" class="form-label">Jenjang</label>
+                                            <select name="jenjang_id" id="jenjang_id" class="form-control jenjang_id">
+                                                <option value="">Pilih Jenjang</option>
+                                                <?php foreach ($dataJenjang as $key => $jenjang) { ?>
+                                                    <option value="<?= $jenjang['id'] ?>"><?= $jenjang['name'] ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mt-3">
+                                            <label for="kelas_id" class="form-label">Kelas</label>
+                                            <select name="kelas_id" id="kelas_id" class="form-control kelas_id">
+                                                <option value="">Pilih Kelas</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3 hidden" id="teacherWrapper">
+                                        <h4 class="card-title">List Guru</h4>
+                                        <div class="col-lg-12 mt-2">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Nama</th>
+                                                            <th>NIK Guru</th>
+                                                            <th>No.Handphone</th>
+                                                            <th>Mapel</th>
+                                                            <th>Pendidikan Terakhir</th>
+                                                            <th>Jabatan</th>
+                                                            <th>Jenis Kelamin</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbody-guru"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3 hidden" id="studentWrapper">
+                                        <h4 class="card-title">List Siswa</h4>
+                                        <div class="col-lg-12 mt-2">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Nama</th>
+                                                            <th>NIS</th>
+                                                            <th>Asal Sekolah</th>
+                                                            <th>Angkatan</th>
+                                                            <th>Tanggal Lahir</th>
+                                                            <th>Usia</th>
+                                                            <th>Jenis Kelamin</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbody-siswa"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </main>
                 <footer class="py-4 bg-light mt-auto">
@@ -246,6 +334,92 @@ if(!$_SESSION['log']){
                     toastr.success('<?php echo $_SESSION['message_success']; ?>');
                     <?php unset($_SESSION['message_success']); ?>
                 <?php endif; ?>
+
+                $(".jenjang_id").on("change", function(e){
+                    e.preventDefault();
+                    const valueJenjang = $(this).val();
+                    $.ajax({
+                        url: 'get_kelas.php',
+                        type: 'GET',
+                        data : {
+                            jenjang_id : valueJenjang
+                        }
+                    }).done(function (response) {
+                       response = JSON.parse(response);
+                       if(response.status){
+                            let data = response.data;
+                            let html = `<option value="">Pilih Kelas</option>`;
+                            let kelas_id = $("#kelas_selected").val();
+                            data.forEach(value => {
+                                html += `<option value="${value.id}" ${kelas_id == value.id ? 'selected' : ''}>${value.name}</option>`;
+                            });
+                            $(".kelas_id").html(html);
+                        }
+                    })
+                    .fail(function () {
+                        console.log("error");
+                    });
+                });
+
+                $(".kelas_id").on("change", function(e){
+                    e.preventDefault();
+                    const valueKelas = $(this).val();
+                    $.ajax({
+                        url: 'get_guru_siswa.php',
+                        type: 'GET',
+                        data : {
+                            kelas_id : valueKelas
+                        }
+                    }).done(function (response) {
+                       response = JSON.parse(response);
+                       if(response.status){
+                            let guru = response.data.guru;
+                            let siswa = response.data.siswa;
+                        
+                            let htmlGuru = "";
+                            let htmlSiswa = "";
+                            guru.forEach((value, index) => {
+                                htmlGuru += `<tr>`;
+                                htmlGuru += `<td>${index + 1}</td>`;
+                                htmlGuru += `<td>${value.nama_guru}</td>`;
+                                htmlGuru += `<td>${value.nik_guru}</td>`;
+                                htmlGuru += `<td>${value.nomor_handphone}</td>`;
+                                htmlGuru += `<td>${value.mapel}</td>`;
+                                htmlGuru += `<td>${value.pendidikan_terakhir}</td>`;
+                                htmlGuru += `<td>${value.jabatan}</td>`;
+                                htmlGuru += `<td>${value.jenis_kelamin}</td>`;
+                                htmlGuru += `<td>${value.status}</td>`;
+                                htmlGuru += `</tr>`;
+                            });
+                            siswa.forEach((value, index) => {
+                                let tanggalLahir = new Date(value.tanggal_lahir);
+                                let day = tanggalLahir.getDate();
+                                let month = tanggalLahir.getMonth() + 1;
+                                let year = tanggalLahir.getFullYear();
+                                day = (day < 10) ? '0' + day : day;
+                                month = (month < 10) ? '0' + month : month;
+                                let formattedTanggal = `${day}/${month}/${year}`;
+                                htmlSiswa += `<tr>`;
+                                htmlSiswa += `<td>${index + 1}</td>`;
+                                htmlSiswa += `<td>${value.nama_siswa}</td>`;
+                                htmlSiswa += `<td>${value.nis}</td>`;
+                                htmlSiswa += `<td>${value.asal_sekolah}</td>`;
+                                htmlSiswa += `<td>${value.angkatan}</td>`;
+                                htmlSiswa += `<td>${formattedTanggal}</td>`;
+                                htmlSiswa += `<td>${value.umur}</td>`;
+                                htmlSiswa += `<td>${value.jenis_kelamin}</td>`;
+                                htmlSiswa += `</tr>`;
+                            });
+                            $("#tbody-guru").html(htmlGuru);
+                            $("#tbody-siswa").html(htmlSiswa);
+                            $("#teacherWrapper").removeClass("hidden");
+                            $("#studentWrapper").removeClass("hidden");
+                        }
+                    })
+                    .fail(function () {
+                        console.log("error");
+                    });
+                });
             });
         </script>
     </body>
