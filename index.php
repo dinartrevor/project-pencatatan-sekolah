@@ -28,6 +28,7 @@ while ($row = $result->fetch_assoc()) {
           <link rel="shortcut icon" href="assets/img/logoalazca.png" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
         <style>
             .hidden{
@@ -375,7 +376,14 @@ while ($row = $result->fetch_assoc()) {
                        if(response.status){
                             let guru = response.data.guru;
                             let siswa = response.data.siswa;
-                        
+                            $("#tbody-guru").empty();
+                            $("#tbody-siswa").empty();
+                            if(guru.length == 0 && siswa.length == 0){
+                                toastr.error('Data Siswa & Guru Tidak Ada');
+                                return false;
+                            }
+                            console.log(guru)
+                          
                             let htmlGuru = "";
                             let htmlSiswa = "";
                             guru.forEach((value, index) => {
