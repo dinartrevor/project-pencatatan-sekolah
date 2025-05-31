@@ -9,17 +9,24 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Font;
 
 $jenjang = $_GET['type'];
-$sql = "SELECT * FROM siswa where jenjang = ?";
+$sql = "SELECT siswa.id_siswa, siswa.nama_siswa, siswa.nis, siswa.agama, siswa.tempat, siswa.tanggal_lahir, siswa.umur, siswa.jenis_kelamin, siswa.asal_sekolah,
+        siswa.angkatan, siswa.kelas_id, siswa.nama_ayah, siswa.nama_ibu, siswa.pekerjaan_ayah, siswa.pekerjaan_ibu, siswa.no_handphone_ayah, siswa.no_handphone_ibu,
+        siswa.anak_ke, siswa.jumlah_saudara, siswa.alamat_lengkap, siswa.photo, siswa.jenjang, kelas.name as nama_kelas, jenjang.name as jenjang_name
+        FROM siswa
+        INNER JOIN kelas ON siswa.kelas_id = kelas.id
+        INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id
+        WHERE siswa.jenjang = ?";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $jenjang);
 $stmt->execute();
 $result = $stmt->get_result();
-$data = [];
+$dataSiswa = [];
 while ($row = $result->fetch_assoc()) {
-    $data[] = $row;
+    $dataSiswa[] = $row;
 }
-$stmt->close();
 
+$stmt->close();
 // Buat objek Spreadsheet baru
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
@@ -36,6 +43,7 @@ $header = [
     'Agama',
     'Asal Sekolah',
     'Angkatan',
+    'Jenjang',
     'Kelas',
     'Nama Ayah',
     'No Handphone Ayah',
@@ -45,7 +53,7 @@ $header = [
     'Pekerjaan Ibu',
     'Anak Ke',
     'Jumlah Saudara',
-    'Alamat', 
+    'Alamat',
 ]; // Contoh header, sesuaikan dengan kolom tabel Anda
 $headerRow = 1; // Baris untuk header
     
@@ -60,7 +68,7 @@ foreach ($header as $h) {
 
 // Tulis data dari database, mulai dari baris setelah header
 $rowNumber = $headerRow + 1; // Mulai setelah baris header
-foreach ($data as $key => $row) {
+foreach ($dataSiswa as $key => $row) {
     $col = 'A';
     $rowDataToWrite = [];
     $rowDataToWrite[] = $key + 1;
@@ -73,7 +81,8 @@ foreach ($data as $key => $row) {
     $rowDataToWrite[] = $row['agama'];
     $rowDataToWrite[] = $row['asal_sekolah'];
     $rowDataToWrite[] = $row['angkatan'];
-    $rowDataToWrite[] = $row['kelas'];
+    $rowDataToWrite[] = $row['jenjang_name'];
+    $rowDataToWrite[] = $row['nama_kelas'];
     $rowDataToWrite[] = $row['nama_ayah'];
     $rowDataToWrite[] = $row['no_handphone_ayah'];
     $rowDataToWrite[] = $row['pekerjaan_ayah'];
@@ -110,5 +119,5 @@ $writer = new Xlsx($spreadsheet);
 // Simpan file ke output (untuk diunduh oleh browser)
 $writer->save('php://output');
 
-exit; // Penting: Hentikan eksekusi script setelah mengirim file
+exit;
 ?>

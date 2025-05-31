@@ -50,8 +50,10 @@
                             <input type="text" class="form-control" name="angkatan" id="angkatan_edit" autocomplete="off" placeholder="Angkatan">
                         </div>
                         <div class="col-md-3 mt-3">
-                            <label for="kelas" class="form-label">Kelas</label>
-                            <input type="text" class="form-control" name="kelas" id="kelas_edit" autocomplete="off" placeholder="Kelas" required>
+                            <label for="kelas_id" class="form-label">Kelas</label>
+                            <select name="kelas_id" id="kelas_id_edit" class="form-control kelas_id">
+                                <option value="">Pilih Kelas</option>
+                            </select>
                         </div>
                         <div class="col-md-3 mt-3">
                             <label for="nama_ayah" class="form-label">Nama Ayah</label>

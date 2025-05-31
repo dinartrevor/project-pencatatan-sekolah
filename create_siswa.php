@@ -49,8 +49,13 @@
                             <input type="text" class="form-control" name="angkatan" id="angkatan" autocomplete="off" placeholder="Angkatan">
                         </div>
                         <div class="col-md-3 mt-3">
-                            <label for="kelas" class="form-label">Kelas</label>
-                            <input type="text" class="form-control" name="kelas" id="kelas" autocomplete="off" placeholder="Kelas" required>
+                            <label for="kelas_id" class="form-label">Kelas</label>
+                            <select name="kelas_id" id="kelas_id" class="form-control kelas_id">
+                                <option value="">Pilih Kelas</option>
+                                <?php foreach ($dataKelas as $key => $kelas) { ?>
+                                    <option value="<?= $kelas['id'] ?>"><?= $kelas['name'] ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                         <div class="col-md-3 mt-3">
                             <label for="nama_ayah" class="form-label">Nama Ayah</label>

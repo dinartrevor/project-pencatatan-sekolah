@@ -229,45 +229,24 @@ if(!$_SESSION['log']){
                 </footer>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
         <script src="js/datatables-simple-demo.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script>
+            $(function () {
+                <?php if(!empty($_SESSION['message_error'])): ?>
+                toastr.error('<?php echo $_SESSION['message_error']; ?>');
+                <?php unset($_SESSION['message_error']); ?>
+                <?php endif; ?>
+                <?php if(!empty($_SESSION['message_success'])): ?>
+                    toastr.success('<?php echo $_SESSION['message_success']; ?>');
+                    <?php unset($_SESSION['message_success']); ?>
+                <?php endif; ?>
+            });
+        </script>
     </body>
-
-        <!-- The Modal -->
-    <div class="modal" id="myModal">
-        <div class="modal-dialog">
-        <div class="modal-content">
-      
-            <!-- Modal Header -->
-            <div class="modal-header">
-            <h4 class="modal-title">Tambah Barang</h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-        
-            <!-- Modal body -->
-            <div class="modal-body">
-            <input type="text" name="nama" placeholder="Nama Siswa" class="form-control">
-            <input type="text" name="nomorinduk" placeholder="Nomor Induk" class="form-control">
-            <input type="text" name="kelas" placeholder="Kelas" class="form-control">
-            <input type="text" name="alamat" placeholder="Alamat Siswa" class="form-control">
-            <input type="text" name="jeniskelamin" placeholder="Jenis Kelamin" class="form-control">
-            <input type="text" name="angkatan" placeholder="Angkatan" class="form-control">
-            <button type="submit" class="btn btn-primary" name="addnewbarang">submit</button>
-            </div>
-        </form>
-        
-            <!-- Modal footer -->
-            <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-        
-        </div>
-        </div>
-    </div>
-
 </html>

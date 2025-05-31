@@ -4,6 +4,17 @@ session_start();
 require_once 'function.php';
 
 $jenjang = 'SMP';
+$sql = "SELECT kelas.id, kelas.name, jenjang.name as jenjang_name FROM kelas INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id WHERE jenjang.name = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $jenjang);
+$stmt->execute();
+$result = $stmt->get_result();
+$dataKelas = [];
+while ($row = $result->fetch_assoc()) {
+    $dataKelas[] = $row;
+}
+$stmt->close();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_siswa'])) {
     try {
         $nama_siswa = $_POST['nama_siswa'];
@@ -15,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_siswa'])) {
         $jenis_kelamin = $_POST['jenis_kelamin'];
         $asal_sekolah = $_POST['asal_sekolah'];
         $angkatan = $_POST['angkatan'];
-        $kelas = $_POST['kelas'];
+        $kelas_id = $_POST['kelas_id'];
         $nama_ayah = $_POST['nama_ayah'];
         $nama_ibu = $_POST['nama_ibu'];
         $pekerjaan_ayah = $_POST['pekerjaan_ayah'];
@@ -47,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_siswa'])) {
             exit();
         }
 
-        $insertSql = "INSERT INTO siswa (nama_siswa, nis, agama, tempat, tanggal_lahir, umur, jenis_kelamin, asal_sekolah, angkatan, kelas, nama_ayah, nama_ibu, pekerjaan_ayah, pekerjaan_ibu, no_handphone_ayah, no_handphone_ibu, anak_ke, jumlah_saudara, alamat_lengkap, photo, jenjang) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertSql = "INSERT INTO siswa (nama_siswa, nis, agama, tempat, tanggal_lahir, umur, jenis_kelamin, asal_sekolah, angkatan, kelas_id, nama_ayah, nama_ibu, pekerjaan_ayah, pekerjaan_ibu, no_handphone_ayah, no_handphone_ibu, anak_ke, jumlah_saudara, alamat_lengkap, photo, jenjang) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
         $insertStmt->bind_param(
             "sssssssssssssssssssss",
@@ -60,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_siswa'])) {
             $jenis_kelamin,
             $asal_sekolah,
             $angkatan,
-            $kelas,
+            $kelas_id,
             $nama_ayah,
             $nama_ibu,
             $pekerjaan_ayah,
@@ -100,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_siswa']) {
         $jenis_kelamin = $_POST['jenis_kelamin'];
         $asal_sekolah = $_POST['asal_sekolah'];
         $angkatan = $_POST['angkatan'];
-        $kelas = $_POST['kelas'];
+        $kelas_id = $_POST['kelas_id'];
         $nama_ayah = $_POST['nama_ayah'];
         $nama_ibu = $_POST['nama_ibu'];
         $pekerjaan_ayah = $_POST['pekerjaan_ayah'];
@@ -127,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_siswa']) {
              $image = $oldImage;
         }
 
-        $updateSql = "UPDATE siswa SET nama_siswa=?, nis=?, agama=?, tempat=?, tanggal_lahir=?, umur=?, jenis_kelamin=?, asal_sekolah=?, angkatan=?, kelas=?, nama_ayah=?, nama_ibu=?, pekerjaan_ayah=?, pekerjaan_ibu=?, no_handphone_ayah=?, no_handphone_ibu=?, anak_ke=?, jumlah_saudara=?, alamat_lengkap=?, photo=? WHERE id_siswa=?";
+        $updateSql = "UPDATE siswa SET nama_siswa=?, nis=?, agama=?, tempat=?, tanggal_lahir=?, umur=?, jenis_kelamin=?, asal_sekolah=?, angkatan=?, kelas_id=?, nama_ayah=?, nama_ibu=?, pekerjaan_ayah=?, pekerjaan_ibu=?, no_handphone_ayah=?, no_handphone_ibu=?, anak_ke=?, jumlah_saudara=?, alamat_lengkap=?, photo=? WHERE id_siswa=?";
         $updateStmt = $conn->prepare($updateSql);
         $updateStmt->bind_param(
             "ssssssssssssssssssssi",
@@ -140,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_siswa']) {
             $jenis_kelamin,
             $asal_sekolah,
             $angkatan,
-            $kelas,
+            $kelas_id,
             $nama_ayah,
             $nama_ibu,
             $pekerjaan_ayah,
@@ -202,7 +213,13 @@ function uploadImage($file)
     }
 }
 
-$sql = "SELECT * FROM siswa WHERE jenjang = ?";
+$sql = "SELECT siswa.id_siswa, siswa.nama_siswa, siswa.nis, siswa.agama, siswa.tempat, siswa.tanggal_lahir, siswa.umur, siswa.jenis_kelamin, siswa.asal_sekolah,
+        siswa.angkatan, siswa.kelas_id, siswa.nama_ayah, siswa.nama_ibu, siswa.pekerjaan_ayah, siswa.pekerjaan_ibu, siswa.no_handphone_ayah, siswa.no_handphone_ibu,
+        siswa.anak_ke, siswa.jumlah_saudara, siswa.alamat_lengkap, siswa.photo, siswa.jenjang, kelas.name as nama_kelas, jenjang.name as jenjang_name
+        FROM siswa
+        INNER JOIN kelas ON siswa.kelas_id = kelas.id
+        INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id
+        WHERE siswa.jenjang = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $jenjang);
 $stmt->execute();
@@ -308,6 +325,17 @@ $stmt->close();
                                     Dashboard
                                 </a>
                                 <div class="sb-sidenav-menu-heading">Management Account</div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMasterData" aria-expanded="false" aria-controls="collapseMasterData">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                        Master Data
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseMasterData" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="data_jenjang.php">Data Jenjang</a>
+                                        <a class="nav-link" href="data_kelas.php">Data Kelas</a>
+                                    </nav>
+                                </div>
                                 <!-- Data Guru -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGuru" aria-expanded="false" aria-controls="collapseGuru">
                                     <div class="sb-nav-link-icon"><i class="fas fa-chalkboard-teacher"></i></div>
@@ -394,7 +422,7 @@ $stmt->close();
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-create">
                                            <i class="fas fa-plus"></i> Tambah Data Siswa Jenjang SMP
                                         </button>
-                                        <a href="<?= 'export_siswa.php?type='.$jenjang.'' ?>" id="exportExcelBtn" class="btn btn-success">
+                                         <a href="<?= 'export_siswa.php?type='.$jenjang.'' ?>" id="exportExcelBtn" class="btn btn-success">
                                            <i class="fa fa-file-excel"></i> Export to Excel
                                         </a>
                                  </div>
@@ -408,6 +436,7 @@ $stmt->close();
                                             <th>No</th>
                                             <th>Nama</th>
                                             <th>NIS</th>
+                                            <th>Jenjang</th>
                                             <th>Kelas</th>
                                             <th>Tanggal Lahir</th>
                                             <th>Usia</th>
@@ -423,7 +452,8 @@ $stmt->close();
                                             <td><?= $key + 1; ?></td>
                                             <td><?= $data['nama_siswa']; ?></td>
                                             <td><?= $data['nis']; ?></td>
-                                            <td><?= $data['kelas']; ?></td>
+                                            <td><?= $data['jenjang_name']; ?></td>
+                                            <td><?= $data['nama_kelas']; ?></td>
                                             <td><?= $data['tanggal_lahir'] ? date('d-m-Y', strtotime($data['tanggal_lahir'])) : '-'; ?></td>
                                             <td><?= $data['umur']; ?></td>
                                             <td><?= $data['jenis_kelamin']; ?></td>
@@ -503,8 +533,8 @@ $stmt->close();
                     }).done(function (response) {
                        response = JSON.parse(response);
                        if(response.status){
-                            let data = response.data;
-                            let roles = response.roles;
+                            let data = response.data.siswa;
+                            let dataKelas = response.data.dataKelas;
                             $('#id_siswa_edit').val(data.id_siswa);
                             $('#nama_siswa_edit').val(data.nama_siswa);
                             $('#nis_edit').val(data.nis);
@@ -526,7 +556,15 @@ $stmt->close();
                             $('#alamat_edit').val(data.alamat_lengkap);
                             let html_jenis_kelamin = `<option value="Laki-Laki" ${data.jenis_kelamin == 'Laki-Laki' ? 'selected' : ''}>Laki-Laki</option>`;
                                 html_jenis_kelamin += `<option value="Perempuan" ${data.jenis_kelamin == 'Perempuan' ? 'selected' : ''}>Perempuan</option>`;
+                                
+                            let html = `<option value="">Pilih Kelas</option>`;
+                            if(dataKelas.length > 0){
+                                 dataKelas.forEach(value => {
+                                    html += `<option value="${value.id}" ${value.id == data.kelas_id ? 'selected' : ''}>${value.name}</option>`;
+                                });
+                            }
                             $('#jenis_kelamin_edit').html(html_jenis_kelamin);
+                            $('#kelas_id_edit').html(html);
                             $('#modal-edit').modal('show');
                         }
                     })
@@ -546,7 +584,7 @@ $stmt->close();
                     }).done(function (response) {
                        response = JSON.parse(response);
                        if(response.status){
-                            let data = response.data;
+                            let data = response.data.siswa;
                             let tanggalLahir = new Date(data.tanggal_lahir);
                             let day = tanggalLahir.getDate();
                             let month = tanggalLahir.getMonth() + 1;
@@ -565,7 +603,8 @@ $stmt->close();
                             $('#t-agama').text(data.agama);
                             $('#t-asal-sekolah').text(data.asal_sekolah);
                             $('#t-angkatan').text(data.angkatan);
-                            $('#t-kelas').text(data.kelas);
+                            $('#t-jenjang').text(data.jenjang_name);
+                            $('#t-kelas').text(data.nama_kelas);
                             $('#t-nama-ayah').text(data.nama_ayah);
                             $('#t-handphone-ayah').text(data.no_handphone_ayah);
                             $('#t-pekerjaan-ayah').text(data.pekerjaan_ayah);

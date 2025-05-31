@@ -24,11 +24,12 @@
                                     <p><strong>Agama:</strong> <span id="t-agama"></span></p>
                                     <p><strong>Asal Sekolah:</strong> <span id="t-asal-sekolah"></span></p>
                                     <p><strong>Angkatan:</strong> <span id="t-angkatan"></span></p>
+                                    <p><strong>Jenjang:</strong> <span id="t-jenjang"></span></p>
                                     <p><strong>Kelas:</strong> <span id="t-kelas"></span></p>
                                     <p><strong>Nama Ayah:</strong> <span id="t-nama-ayah"></span></p>
                                     <p><strong>No Handphone Ayah:</strong> <span id="t-handphone-ayah"></span></p>
                                     <p><strong>Pekerjaan Ayah:</strong> <span id="t-pekerjaan-ayah"></span></p>
-                                    <p><strong>Nama Ibu:</strong> <span id="t-nama-Ibu"></span></p>
+                                    <p><strong>Nama Ibu:</strong> <span id="t-nama-ibu"></span></p>
                                     <p><strong>No Handphone Ibu:</strong> <span id="t-handphone-ibu"></span></p>
                                     <p><strong>Pekerjaan Ibu:</strong> <span id="t-pekerjaan-ibu"></span></p>
                                     <p><strong>Anak Ke:</strong> <span id="t-anak-ke"></span></p>
