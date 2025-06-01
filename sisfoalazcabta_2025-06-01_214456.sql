@@ -29,8 +29,9 @@ CREATE TABLE `dataelearning` (
   `nama` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
   `kelas` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `type` enum('Guru','Siswa') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mapel` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_elearning`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +39,6 @@ CREATE TABLE `dataelearning` (
 --
 
 /*!40000 ALTER TABLE `dataelearning` DISABLE KEYS */;
-INSERT INTO `dataelearning` VALUES (2,'dinartrevor','password','Dinar','12345','Guru'),(3,'siswadinar','password123','Siswa','121313','Siswa');
 /*!40000 ALTER TABLE `dataelearning` ENABLE KEYS */;
 
 --
@@ -61,7 +61,7 @@ CREATE TABLE `dataipad` (
   `kode_restrict` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `type` enum('Guru','Siswa') COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_apple`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +69,6 @@ CREATE TABLE `dataipad` (
 --
 
 /*!40000 ALTER TABLE `dataipad` DISABLE KEYS */;
-INSERT INTO `dataipad` VALUES (1,'Dinar','qwertyui','dadadafad','123456789','rtyuiop','poiuy','456','09876','9876','Guru'),(3,'Uzumaki Naruto update','apple id','uzumakidadad','24424243','fsrs','fsfgs','gsgsg','srsrs4','433','Siswa');
 /*!40000 ALTER TABLE `dataipad` ENABLE KEYS */;
 
 --
@@ -93,8 +92,9 @@ CREATE TABLE `guru` (
   `tanggal_lahir` date DEFAULT NULL,
   `agama` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `image` text COLLATE utf8mb4_general_ci,
+  `kelas_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id_guru`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,8 +102,52 @@ CREATE TABLE `guru` (
 --
 
 /*!40000 ALTER TABLE `guru` DISABLE KEYS */;
-INSERT INTO `guru` VALUES (1,'Dinar Abdul','124556788','informatika','SMK PI','Perempuan','085161030200','BOOSS','Belum Menikah','Bandung','2025-05-20','Islam','682c8d0551756643201732_682c8d0551760.jpeg');
 /*!40000 ALTER TABLE `guru` ENABLE KEYS */;
+
+--
+-- Table structure for table `jenjang`
+--
+
+DROP TABLE IF EXISTS `jenjang`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `jenjang` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jenjang`
+--
+
+/*!40000 ALTER TABLE `jenjang` DISABLE KEYS */;
+INSERT INTO `jenjang` VALUES (1,'TK-A'),(2,'TK-B'),(3,'SD'),(4,'SD GRADE 2'),(5,'SMP');
+/*!40000 ALTER TABLE `jenjang` ENABLE KEYS */;
+
+--
+-- Table structure for table `kelas`
+--
+
+DROP TABLE IF EXISTS `kelas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `kelas` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+  `jenjang_id` bigint DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `kelas`
+--
+
+/*!40000 ALTER TABLE `kelas` DISABLE KEYS */;
+INSERT INTO `kelas` VALUES (1,1,'Al-Asma’i'),(3,2,'Kelas Al-Fazari'),(5,2,'Kelas Al-Haytham'),(6,3,'Kelas Ibnu yunus'),(7,3,'Kelas Ibnu sina'),(8,3,'Kelas Ibnu khaldun'),(9,4,'Kelas Al-Jazari'),(10,5,'Kelas Ar-Rahman');
+/*!40000 ALTER TABLE `kelas` ENABLE KEYS */;
 
 --
 -- Table structure for table `login`
@@ -169,7 +213,7 @@ CREATE TABLE `siswa` (
   `jenis_kelamin` enum('Laki-Laki','Perempuan') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `asal_sekolah` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `angkatan` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `kelas` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `kelas_id` bigint DEFAULT NULL,
   `nama_ayah` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `nama_ibu` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `pekerjaan_ayah` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -180,9 +224,9 @@ CREATE TABLE `siswa` (
   `jumlah_saudara` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `alamat_lengkap` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `photo` text COLLATE utf8mb4_general_ci,
-  `jenjang` enum('TKA-A','TKA-B','SD','SD G2','SMP') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `jenjang` enum('TK-A','TK-B','SD','SD GRADE 2','SMP') COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_siswa`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +234,6 @@ CREATE TABLE `siswa` (
 --
 
 /*!40000 ALTER TABLE `siswa` DISABLE KEYS */;
-INSERT INTO `siswa` VALUES (6,'DINAR','234241','ISLAM','BANDUNG','2000-02-20',25,'Perempuan','BANDUNG','2020','2','AYAH','IBU','AYAH BEKERJA','IBU BEKERJA','0821','2121','2','3','BANDUNG KOTA','68349d3c145a7677456527_68349d3c145af.jpg','SMP');
 /*!40000 ALTER TABLE `siswa` ENABLE KEYS */;
 
 --
@@ -206,4 +249,4 @@ INSERT INTO `siswa` VALUES (6,'DINAR','234241','ISLAM','BANDUNG','2000-02-20',25
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-26 23:57:38
+-- Dump completed on 2025-06-01 21:45:01
