@@ -6,6 +6,7 @@ if(!$_SESSION['log']){
 }
 
 $role = $_SESSION['role'];
+$nameRole= $_SESSION['name'];
 $type = 'Guru';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_apple'])) {
@@ -301,7 +302,7 @@ $stmt->close();
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        IT alazacabta
+                       <?= $nameRole.' - '.$role ?>
                     </div>
                 </nav>
             </div>

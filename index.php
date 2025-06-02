@@ -6,6 +6,7 @@ if(!$_SESSION['log']){
 }
 
 $role = $_SESSION['role'];
+$nameRole= $_SESSION['name'];
 
 $sql = "SELECT * FROM jenjang";
 $stmt = $conn->prepare($sql);
@@ -161,9 +162,9 @@ while ($row = $result->fetch_assoc()) {
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        IT alazacabta
+                       <?= $nameRole.' - '.$role ?>
                     </div>
-                </nav>
+                </nav>  
             </div>
             <div id="layoutSidenav_content">
                 <main>

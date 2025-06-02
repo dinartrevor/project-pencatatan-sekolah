@@ -6,6 +6,7 @@ if(!$_SESSION['log']){
 }
 
 $role = $_SESSION['role'];
+$nameRole= $_SESSION['name'];
 
 $jenjang = 'SD';
 $sql = "SELECT kelas.id, kelas.name, jenjang.name as jenjang_name FROM kelas INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id WHERE jenjang.name = ?";
@@ -415,7 +416,7 @@ $stmt->close();
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        IT alazacabta
+                       <?= $nameRole.' - '.$role ?>
                     </div>
                 </nav>
             </div>

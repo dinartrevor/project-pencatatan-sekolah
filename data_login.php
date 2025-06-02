@@ -1,7 +1,12 @@
 <?php
+require 'function.php';
 session_start();
+if(!$_SESSION['log']){
+    header('location: login.php');
+}
 
-require_once 'function.php';
+$role = $_SESSION['role'];
+$nameRole= $_SESSION['name'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id'])) {
     try {
@@ -160,6 +165,7 @@ $stmt->close();
                                     Dashboard
                                 </a>
                                 <div class="sb-sidenav-menu-heading">Management Account</div>
+                                
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMasterData" aria-expanded="false" aria-controls="collapseMasterData">
                                     <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
                                         Master Data
@@ -171,7 +177,6 @@ $stmt->close();
                                         <a class="nav-link" href="data_kelas.php">Data Kelas</a>
                                     </nav>
                                 </div>
-
                                 <!-- Data Guru -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGuru" aria-expanded="false" aria-controls="collapseGuru">
                                     <div class="sb-nav-link-icon"><i class="fas fa-chalkboard-teacher"></i></div>
@@ -200,7 +205,6 @@ $stmt->close();
                                     </nav>
                                 </div>
 
-                                <!-- Data iPad -->
                                 <?php if($role == 'IT'){ ?> 
                                 <!-- Data iPad -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseiPad" aria-expanded="false" aria-controls="collapseiPad">
@@ -230,21 +234,21 @@ $stmt->close();
                                     </nav>
                                 </div>
                                 
-                               <?php if($role == 'IT'){ ?> 
-  <div class="sb-sidenav-menu-heading">Akses Login</div>
+                                <?php if($role == 'IT'){ ?> 
+                                <div class="sb-sidenav-menu-heading">Akses Login</div>
                                 <a class="nav-link" href="data_login.php">
                                     <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                     Data Login
                                 </a>
+                                <?php } ?>
                             </div>
-<?php } ?>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        IT alazacabta
+                       <?= $nameRole.' - '.$role ?>
                     </div>
-                </nav>
+                </nav>  
             </div>
             <div id="layoutSidenav_content">
                 <main>

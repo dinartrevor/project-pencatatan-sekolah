@@ -12,6 +12,7 @@ if(isset($_POST['login'])){
     if($hitung > 0){
         $_SESSION['log'] = true;
         $_SESSION['role'] = $data['role'];
+        $_SESSION['name'] = $data['name'];
         header('location: index.php');
     } else {
         header('location: login.php');
