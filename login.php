@@ -8,9 +8,10 @@ if(isset($_POST['login'])){
 
     $cekdatabase = mysqli_query($conn, "SELECT * FROM login where email ='$email' and password ='$password'");
     $hitung = mysqli_num_rows($cekdatabase);
-
+    $data = mysqli_fetch_assoc($cekdatabase);
     if($hitung > 0){
         $_SESSION['log'] = true;
+        $_SESSION['role'] = $data['role'];
         header('location: index.php');
     } else {
         header('location: login.php');

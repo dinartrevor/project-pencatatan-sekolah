@@ -1,7 +1,11 @@
 <?php
-session_start();
-
 require_once 'function.php';
+session_start();
+if(!$_SESSION['log']){
+    header('location: login.php');
+}
+
+$role = $_SESSION['role'];
 
 $type = 'Siswa';
 
@@ -217,6 +221,18 @@ $stmt->close();
                                     Dashboard
                                 </a>
                                 <div class="sb-sidenav-menu-heading">Management Account</div>
+                                
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMasterData" aria-expanded="false" aria-controls="collapseMasterData">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                        Master Data
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseMasterData" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="data_jenjang.php">Data Jenjang</a>
+                                        <a class="nav-link" href="data_kelas.php">Data Kelas</a>
+                                    </nav>
+                                </div>
                                 <!-- Data Guru -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGuru" aria-expanded="false" aria-controls="collapseGuru">
                                     <div class="sb-nav-link-icon"><i class="fas fa-chalkboard-teacher"></i></div>
@@ -245,6 +261,7 @@ $stmt->close();
                                     </nav>
                                 </div>
 
+                                <?php if($role == 'IT'){ ?> 
                                 <!-- Data iPad -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseiPad" aria-expanded="false" aria-controls="collapseiPad">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tablet-alt"></i></div>
@@ -257,6 +274,8 @@ $stmt->close();
                                         <a class="nav-link" href="data_ipad_siswa.php">Data iPad Siswa</a>
                                     </nav>
                                 </div>
+
+                                <?php } ?>
 
                                 <!-- Data eLearning -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseElearning" aria-expanded="false" aria-controls="collapseElearning">
@@ -271,11 +290,13 @@ $stmt->close();
                                     </nav>
                                 </div>
                                 
-                                <!-- <div class="sb-sidenav-menu-heading">Laporan</div>
-                                <a class="nav-link" href="tables.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                    Rekap data siswa
-                                </a> -->
+                                <?php if($role == 'IT'){ ?> 
+                                <div class="sb-sidenav-menu-heading">Akses Login</div>
+                                <a class="nav-link" href="data_login.php">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                    Data Login
+                                </a>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>

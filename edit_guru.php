@@ -47,17 +47,21 @@
                             <label for="jabatan" class="form-label">Jabatan</label>
                             <input type="text" class="form-control" name="jabatan" id="jabatan_edit" autocomplete="off" placeholder="Jabatan" required>
                         </div>
-                         <div class="col-md-6 mt-3">
+                         <div class="col-md-4 mt-3">
                             <label for="jenjang_id" class="form-label">Jenjang</label>
                             <select name="jenjang_id" id="jenjang_id_edit" class="form-control jenjang_id">
                                 <option value="">Pilih Jenjang</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
+                        <div class="col-md-4 mt-3">
                             <label for="kelas_id" class="form-label">Kelas</label>
                             <select name="kelas_id" id="kelas_id_edit" class="form-control kelas_id">
                              
                             </select>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
+                            <input type="text" class="form-control" name="tahun_ajaran" id="tahun_ajaran_edit" autocomplete="off" placeholder="Tahun Ajaran" required>
                         </div>
                          <div class="col-md-4 mt-3">
                             <label for="agama" class="form-label">Agama</label>

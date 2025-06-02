@@ -1,7 +1,13 @@
 <?php
-session_start();
 
 require_once 'function.php';
+session_start();
+if(!$_SESSION['log']){
+    header('location: login.php');
+}
+
+$role = $_SESSION['role'];
+
 
 $sql = "SELECT * FROM jenjang";
 $stmt = $conn->prepare($sql);
@@ -27,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_guru'])) {
         $tanggal_lahir = $_POST['tanggal_lahir'];
         $agama = $_POST['agama'];
         $kelas_id = $_POST['kelas_id'];
+        $tahun_ajaran = $_POST['tahun_ajaran'];
         $image = '';
         if (!empty($_FILES['image']['name'])) {
 			$image = uploadImage($_FILES['image']);
@@ -49,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_guru'])) {
             exit();
         }
 
-        $insertSql = "INSERT INTO guru (nama_guru, nik_guru, nomor_handphone, mapel, pendidikan_terakhir, jabatan, jenis_kelamin, status, tempat, tanggal_lahir, agama, image, kelas_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertSql = "INSERT INTO guru (nama_guru, nik_guru, nomor_handphone, mapel, pendidikan_terakhir, jabatan, jenis_kelamin, status, tempat, tanggal_lahir, agama, image, kelas_id, tahun_ajaran) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("ssssssssssssi", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id);
+        $insertStmt->bind_param("ssssssssssssis", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id, $tahun_ajaran);
         $insertStmt->execute();
         $insertStmt->close();
 
@@ -81,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_guru']) {
         $tanggal_lahir = $_POST['tanggal_lahir'];
         $agama = $_POST['agama'];
         $kelas_id = $_POST['kelas_id'];
+        $tahun_ajaran = $_POST['tahun_ajaran'];
 
         $getOldImageSql = "SELECT image FROM guru WHERE id_guru = ?";
         $getOldImageStmt = $conn->prepare($getOldImageSql);
@@ -99,9 +107,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_guru']) {
         }
 
 
-        $updateSql = "UPDATE guru SET nama_guru=?, nik_guru=?, nomor_handphone=?, mapel=?, pendidikan_terakhir=?, jabatan=?, jenis_kelamin=?, status=?, tempat=?, tanggal_lahir=?, agama=?, image=?, kelas_id=? WHERE id_guru=?";
+        $updateSql = "UPDATE guru SET nama_guru=?, nik_guru=?, nomor_handphone=?, mapel=?, pendidikan_terakhir=?, jabatan=?, jenis_kelamin=?, status=?, tempat=?, tanggal_lahir=?, agama=?, image=?, kelas_id=?, tahun_ajaran=? WHERE id_guru=?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("ssssssssssssii", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id, $id);
+        $updateStmt->bind_param("ssssssssssssisi", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id, $tahun_ajaran, $id);
         $updateStmt->execute();
         $updateStmt->close();
 
@@ -255,6 +263,7 @@ $stmt->close();
                                     Dashboard
                                 </a>
                                 <div class="sb-sidenav-menu-heading">Management Account</div>
+                                
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMasterData" aria-expanded="false" aria-controls="collapseMasterData">
                                     <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
                                         Master Data
@@ -294,6 +303,7 @@ $stmt->close();
                                     </nav>
                                 </div>
 
+                                <?php if($role == 'IT'){ ?> 
                                 <!-- Data iPad -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseiPad" aria-expanded="false" aria-controls="collapseiPad">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tablet-alt"></i></div>
@@ -306,6 +316,8 @@ $stmt->close();
                                         <a class="nav-link" href="data_ipad_siswa.php">Data iPad Siswa</a>
                                     </nav>
                                 </div>
+
+                                <?php } ?>
 
                                 <!-- Data eLearning -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseElearning" aria-expanded="false" aria-controls="collapseElearning">
@@ -320,11 +332,13 @@ $stmt->close();
                                     </nav>
                                 </div>
                                 
-                                <!-- <div class="sb-sidenav-menu-heading">Laporan</div>
-                                <a class="nav-link" href="tables.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                    Rekap data siswa
-                                </a> -->
+                                <?php if($role == 'IT'){ ?> 
+                                <div class="sb-sidenav-menu-heading">Akses Login</div>
+                                <a class="nav-link" href="data_login.php">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                    Data Login
+                                </a>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -460,6 +474,7 @@ $stmt->close();
                             $('#tempat_edit').val(data.tempat);
                             $('#tanggal_lahir_edit').val(data.tanggal_lahir);
                             $('#agama_edit').val(data.agama);
+                            $('#tahun_ajaran_edit').val(data.tahun_ajaran);
                             let html_jenis_kelamin = `<option value="Laki-Laki" ${data.jenis_kelamin == 'Laki-Laki' ? 'selected' : ''}>Laki-Laki</option>`;
                                 html_jenis_kelamin += `<option value="Perempuan" ${data.jenis_kelamin == 'Perempuan' ? 'selected' : ''}>Perempuan</option>`;
                             let html_status = `<option value="Menikah" ${data.status == 'Menikah' ? 'selected' : ''}>Menikah</option>`;
@@ -516,6 +531,7 @@ $stmt->close();
                             $('#t-agama').text(data.agama);
                             $('#t-jenjang').text(data.nama_jenjang);
                             $('#t-kelas').text(data.nama_kelas);
+                            $('#t-tahun-ajaran').text(data.tahun_ajaran);
                             $('#photo-profil').attr('src', `${'uploads/'+data.image}`)
                             $('#modal-detail').modal('show');
                         }

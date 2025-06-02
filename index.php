@@ -5,6 +5,8 @@ if(!$_SESSION['log']){
     header('location: login.php');
 }
 
+$role = $_SESSION['role'];
+
 $sql = "SELECT * FROM jenjang";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
@@ -118,6 +120,7 @@ while ($row = $result->fetch_assoc()) {
                                     </nav>
                                 </div>
 
+                                <?php if($role == 'IT'){ ?> 
                                 <!-- Data iPad -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseiPad" aria-expanded="false" aria-controls="collapseiPad">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tablet-alt"></i></div>
@@ -130,6 +133,8 @@ while ($row = $result->fetch_assoc()) {
                                         <a class="nav-link" href="data_ipad_siswa.php">Data iPad Siswa</a>
                                     </nav>
                                 </div>
+
+                                <?php } ?>
 
                                 <!-- Data eLearning -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseElearning" aria-expanded="false" aria-controls="collapseElearning">
@@ -144,11 +149,13 @@ while ($row = $result->fetch_assoc()) {
                                     </nav>
                                 </div>
                                 
-                                <!-- <div class="sb-sidenav-menu-heading">Laporan</div>
-                                <a class="nav-link" href="tables.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                    Rekap data siswa
-                                </a> -->
+                                <?php if($role == 'IT'){ ?> 
+                                <div class="sb-sidenav-menu-heading">Akses Login</div>
+                                <a class="nav-link" href="data_login.php">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                    Data Login
+                                </a>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -259,30 +266,22 @@ while ($row = $result->fetch_assoc()) {
                                         </div>
                                     </div>
                                     <div class="row mt-3 hidden" id="teacherWrapper">
-                                        <h4 class="card-title">List Guru</h4>
+                                        <h4 class="card-title hidden" id="titleTeacher">Wali Kelas</h4>
+                                        <div class="col-lg-12 mt-2" id="listTeacher">
+                                                
+                                        </div>
                                         <div class="col-lg-12 mt-2">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>No</th>
-                                                            <th>Nama</th>
-                                                            <th>NIK Guru</th>
-                                                            <th>No.Handphone</th>
-                                                            <th>Mapel</th>
-                                                            <th>Pendidikan Terakhir</th>
-                                                            <th>Jabatan</th>
-                                                            <th>Jenis Kelamin</th>
-                                                            <th>Status</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="tbody-guru"></tbody>
-                                                </table>
-                                            </div>
+                                            <h4 class="card-title" id="titleTahunAjaran">Tahun Ajaran</h4>
+                                            <div id="listTahunAjaran"></div>
                                         </div>
                                     </div>
                                     <div class="row mt-3 hidden" id="studentWrapper">
-                                        <h4 class="card-title">List Siswa</h4>
+                                        <div class="d-flex justify-content-between">
+                                            <h4 class="card-title">List Siswa</h4>
+                                            <div>
+                                                <a href="" class="btn btn-outline-success" id="btn-export"><i class="fa fa-file-excel"></i> Export Data</a>
+                                            </div>
+                                        </div>
                                         <div class="col-lg-12 mt-2">
                                             <div class="table-responsive">
                                                 <table class="table table-bordered">
@@ -365,6 +364,7 @@ while ($row = $result->fetch_assoc()) {
                 $(".kelas_id").on("change", function(e){
                     e.preventDefault();
                     const valueKelas = $(this).val();
+                    const jenjang = $(".jenjang_id").val();
                     $.ajax({
                         url: 'get_guru_siswa.php',
                         type: 'GET',
@@ -376,29 +376,26 @@ while ($row = $result->fetch_assoc()) {
                        if(response.status){
                             let guru = response.data.guru;
                             let siswa = response.data.siswa;
-                            $("#tbody-guru").empty();
+                            $("#btn-export").attr('href', `export_guru_siswa.php?jenjang=${jenjang}&kelas=${valueKelas}`)
+                            $("#listTeacher").empty();
+                            $("#listTahunAjaran").empty();
                             $("#tbody-siswa").empty();
                             if(guru.length == 0 && siswa.length == 0){
+                                $("#teacherWrapper").addClass("hidden");
+                                $("#studentWrapper").addClass("hidden");
                                 toastr.error('Data Siswa & Guru Tidak Ada');
                                 return false;
                             }
-                            console.log(guru)
                           
-                            let htmlGuru = "";
+                            let htmlGuru = "<ol>";
                             let htmlSiswa = "";
+                            let tahunAjaran = "";
                             guru.forEach((value, index) => {
-                                htmlGuru += `<tr>`;
-                                htmlGuru += `<td>${index + 1}</td>`;
-                                htmlGuru += `<td>${value.nama_guru}</td>`;
-                                htmlGuru += `<td>${value.nik_guru}</td>`;
-                                htmlGuru += `<td>${value.nomor_handphone}</td>`;
-                                htmlGuru += `<td>${value.mapel}</td>`;
-                                htmlGuru += `<td>${value.pendidikan_terakhir}</td>`;
-                                htmlGuru += `<td>${value.jabatan}</td>`;
-                                htmlGuru += `<td>${value.jenis_kelamin}</td>`;
-                                htmlGuru += `<td>${value.status}</td>`;
-                                htmlGuru += `</tr>`;
+                                 htmlGuru += `<li>${value.nama_guru}</li>`;
+                                 tahunAjaran = value.tahun_ajaran;
                             });
+                            htmlGuru += `</ol>`;
+
                             siswa.forEach((value, index) => {
                                 let tanggalLahir = new Date(value.tanggal_lahir);
                                 let day = tanggalLahir.getDate();
@@ -418,8 +415,12 @@ while ($row = $result->fetch_assoc()) {
                                 htmlSiswa += `<td>${value.jenis_kelamin}</td>`;
                                 htmlSiswa += `</tr>`;
                             });
-                            $("#tbody-guru").html(htmlGuru);
+
+                            $("#listTeacher").html(htmlGuru);
                             $("#tbody-siswa").html(htmlSiswa);
+                            $("#listTahunAjaran").html(`<ul><li>${tahunAjaran}</li></ul>`);
+                            $("#titleTahunAjaran").removeClass("hidden");
+                            $("#titleTeacher").removeClass("hidden");
                             $("#teacherWrapper").removeClass("hidden");
                             $("#studentWrapper").removeClass("hidden");
                         }

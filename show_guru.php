@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         global $conn;
         $sql = "SELECT guru.id_guru, guru.nama_guru, guru.nik_guru, guru.mapel, guru.pendidikan_terakhir,
             guru.jenis_kelamin, guru.nomor_handphone, guru.jabatan,  guru.status, guru.tempat, guru.tanggal_lahir,
-            guru.agama, guru.image, guru.kelas_id, kelas.name as nama_kelas, jenjang.id as jenjang_id, jenjang.name as nama_jenjang
+            guru.agama, guru.image, guru.kelas_id, guru.tahun_ajaran, kelas.name as nama_kelas, jenjang.id as jenjang_id, jenjang.name as nama_jenjang
             FROM guru
             INNER JOIN kelas ON guru.kelas_id = kelas.id
             INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id

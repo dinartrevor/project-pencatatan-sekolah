@@ -1,32 +1,30 @@
 <?php
-require_once 'function.php';
 session_start();
-if(!$_SESSION['log']){
-    header('location: login.php');
-}
 
-$role = $_SESSION['role'];
-
+require_once 'function.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id'])) {
     try {
-        $name = $_POST['name'];
+        $name = $_POST['nama'];
+        $email = $_POST['email'];
+        $password = $_POST['password_login'];
+        $role = $_POST['role'];
 
         global $conn;
 
-        $insertSql = "INSERT INTO jenjang (name) VALUES (?)";
+        $insertSql = "INSERT INTO login (name,email,password,role) VALUES (?,?,?,?)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("s", $name);
+        $insertStmt->bind_param("ssss", $name, $email, $password, $role);
         $insertStmt->execute();
         $insertStmt->close();
 
-        $_SESSION['message_success'] = 'Data Jenjang Berhasil ditambahkan';
-        header("Location: data_jenjang.php");
+        $_SESSION['message_success'] = 'Data Login Berhasil ditambahkan';
+        header("Location: data_login.php");
         exit();
 
     } catch (Exception $e) {
         $_SESSION['message_error'] = 'Error: ' . $e->getMessage();
-        header("Location: data_jenjang.php");
+        header("Location: data_login.php");
         exit();
     }
 }
@@ -34,33 +32,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id']) {
     try {
         $id = $_POST['id'];
-        $name = $_POST['name'];
+        $name = $_POST['nama'];
+        $email = $_POST['email'];
+        $password = $_POST['password_login'];
+        $role = $_POST['role'];
 
-        $updateSql = "UPDATE jenjang SET name=? WHERE id=?";
+        $updateSql = "UPDATE login SET name=?, email=?, password=?, role=? WHERE iduser=?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("si", $name, $id);
+        $updateStmt->bind_param("ssssi", $name,$email, $password, $role, $id);
         $updateStmt->execute();
         $updateStmt->close();
 
 
-        $_SESSION['message_success'] = 'Data Jenjang Berhasil diubah';
-        header("Location: data_jenjang.php");
+        $_SESSION['message_success'] = 'Data Login Berhasil diubah';
+        header("Location: data_login.php");
         exit();
 
     } catch (Exception $e) {
         $_SESSION['message_error'] = 'Error: ' . $e->getMessage();
-        header("Location: data_jenjang.php");
+        header("Location: data_login.php");
         exit();
     }
 }
 
-$sql = "SELECT * FROM jenjang";
+$sql = "SELECT * FROM login";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
-$dataJenjang = [];
+$dataLogin = [];
 while ($row = $result->fetch_assoc()) {
-    $dataJenjang[] = $row;
+    $dataLogin[] = $row;
 }
 
 $stmt->close();
@@ -76,7 +77,7 @@ $stmt->close();
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content=" Al-Azhar Cairo Baturaja" />
         <meta name="author" content=" Al-Azhar Cairo Baturaja" />
-        <title>Data Master Jenjang</title>
+        <title>Data Akses Login</title>
         <link rel="shortcut icon" href="assets/img/logoalazca.png" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
@@ -159,7 +160,6 @@ $stmt->close();
                                     Dashboard
                                 </a>
                                 <div class="sb-sidenav-menu-heading">Management Account</div>
-                                
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMasterData" aria-expanded="false" aria-controls="collapseMasterData">
                                     <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
                                         Master Data
@@ -171,6 +171,7 @@ $stmt->close();
                                         <a class="nav-link" href="data_kelas.php">Data Kelas</a>
                                     </nav>
                                 </div>
+
                                 <!-- Data Guru -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGuru" aria-expanded="false" aria-controls="collapseGuru">
                                     <div class="sb-nav-link-icon"><i class="fas fa-chalkboard-teacher"></i></div>
@@ -199,6 +200,7 @@ $stmt->close();
                                     </nav>
                                 </div>
 
+                                <!-- Data iPad -->
                                 <?php if($role == 'IT'){ ?> 
                                 <!-- Data iPad -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseiPad" aria-expanded="false" aria-controls="collapseiPad">
@@ -228,14 +230,14 @@ $stmt->close();
                                     </nav>
                                 </div>
                                 
-                                <?php if($role == 'IT'){ ?> 
-                                <div class="sb-sidenav-menu-heading">Akses Login</div>
+                               <?php if($role == 'IT'){ ?> 
+  <div class="sb-sidenav-menu-heading">Akses Login</div>
                                 <a class="nav-link" href="data_login.php">
                                     <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                     Data Login
                                 </a>
-                                <?php } ?>
                             </div>
+<?php } ?>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
@@ -247,10 +249,10 @@ $stmt->close();
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Data Master Jenjang</h1>
+                        <h1 class="mt-4">Data Akses Login</h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="data_jenjang.php">Master Jenjang</a></li>
-                            <li class="breadcrumb-item active">List Master Jenjang</li>
+                            <li class="breadcrumb-item"><a href="data_login.php">Akses Login</a></li>
+                            <li class="breadcrumb-item active">List Akses Login</li>
                         </ol>
                         <div class="card mb-4">
                             <div class="card-body">
@@ -260,9 +262,9 @@ $stmt->close();
                                         <!-- Button to Open the Modal -->
                                         <div class="col-lg-12 d-flex justify-content-between align-items-center">
                                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-create">
-                                                <i class="fas fa-plus"></i> Tambah Data Master Jenjang
+                                                <i class="fas fa-plus"></i> Tambah Data Akses Login
                                                 </button>
-                                                <a href="<?= 'export_jenjang.php' ?>" id="exportExcelBtn" class="btn btn-success">
+                                                <a href="<?= 'export_login.php' ?>" id="exportExcelBtn" class="btn btn-success">
                                                 <i class="fa fa-file-excel"></i> Export to Excel
                                                 </a>
                                         </div>
@@ -274,19 +276,30 @@ $stmt->close();
                                             <tr>
                                                 <th>No</th>
                                                 <th>Nama</th>
+                                                <th>Email</th>
+                                                <th>Password</th>
+                                                <th>Role</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                                foreach ($dataJenjang as $key => $data) {
+                                                foreach ($dataLogin as $key => $data) {
                                             ?>
                                             <tr>
                                                 <td><?= $key + 1; ?></td>
                                                 <td><?= $data['name']; ?></td>
+                                                <td><?= $data['email']; ?></td>
                                                 <td>
-                                                    <a href="javascript:void(0)" data-url="<?= 'show_jenjang.php' ?>" data-id="<?= $data['id'] ?>" class="edit btn btn-info btn-sm text-light "> <i class="fas fa-edit"></i></a>
-                                                    <a href="javascript:void(0)" data-url="<?= 'delete_jenjang.php' ?>" data-id="<?= $data['id'] ?>" class="delete btn btn-danger btn-sm"> <i class="fas fa-times"></i></a>
+                                                    <span>*******</span>
+                                                    <a href="javascript:void(0)" class="show-password text-muted" title="Lihat Password" data-password="<?= $data['password']; ?>">
+                                                        <i class="fas fa-eye-slash"></i>
+                                                    </a>
+                                                </td>
+                                                  <td><?= $data['role']; ?></td>
+                                                <td>
+                                                    <a href="javascript:void(0)" data-url="<?= 'show_login.php' ?>" data-id="<?= $data['iduser'] ?>" class="edit btn btn-info btn-sm text-light "> <i class="fas fa-edit"></i></a>
+                                                    <a href="javascript:void(0)" data-url="<?= 'delete_login.php' ?>" data-id="<?= $data['iduser'] ?>" class="delete btn btn-danger btn-sm"> <i class="fas fa-times"></i></a>
                                                 </td>
                                             </tr>
                                             <?php
@@ -298,8 +311,8 @@ $stmt->close();
                             </div>
                         </div>
                 </main>
-                <?php include 'create_jenjang.php' ?>
-                <?php include 'edit_jenjang.php' ?>
+                <?php include 'create_login.php' ?>
+                <?php include 'edit_login.php' ?>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
@@ -327,6 +340,19 @@ $stmt->close();
                     <?php unset($_SESSION['message_success']); ?>
                 <?php endif; ?>
 
+                $('.show-hide-password').on('click', function() {
+                    let passwordInput = $('.password');
+                    let eyeIcon = $(this).find('i');
+
+                    if (passwordInput.attr('type') === 'password') {
+                        passwordInput.attr('type', 'text');
+                        eyeIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                    } else {
+                        passwordInput.attr('type', 'password');
+                        eyeIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                    }
+                });
+
                 $('#datatablesSimple tbody').on('click', '.edit', function () {
                     let id = $(this).data('id');
                     let url_hit = $(this).data('url');
@@ -340,8 +366,13 @@ $stmt->close();
                        response = JSON.parse(response);
                        if(response.status){
                             let data = response.data;
-                            $('#id_edit').val(data.id);
-                            $('#name_edit').val(data.name);
+                            $('#iduser').val(data.iduser);
+                            $('#nama_edit').val(data.name);
+                            $('#email_edit').val(data.email);
+                            $('#password_edit').val(data.password);
+                             let html_role = `<option value="IT" ${data.role == 'IT' ? 'selected' : ''}>IT</option>`;
+                                html_role += `<option value="ADMIN" ${data.role == 'ADMIN' ? 'selected' : ''}>ADMIN</option>`;
+                                $("#role_edit").html(html_role);
                             $('#modal-edit').modal('show');
                         }
                     })
@@ -389,6 +420,22 @@ $stmt->close();
                         }
                     });
                 });
+
+                 $('#datatablesSimple tbody').on('click', '.show-password', function (e) {
+                    e.preventDefault();
+                    let passwordSpan = $(this).siblings('span');
+                    let password = $(this).data('password');
+
+                    if (passwordSpan.text() === '*******') {
+                        passwordSpan.text(password);
+                        $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+                        $(this).attr('title', 'Sembunyikan Password');
+                    } else {
+                        passwordSpan.text('*******');
+                        $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+                        $(this).attr('title', 'Lihat Password');
+                    }
+                })
             });
             
         </script>

@@ -1,7 +1,12 @@
 <?php
-session_start();
-
 require_once 'function.php';
+session_start();
+if(!$_SESSION['log']){
+    header('location: login.php');
+}
+
+$role = $_SESSION['role'];
+
 
 $jenjang = 'TK-A';
 $sql = "SELECT kelas.id, kelas.name, jenjang.name as jenjang_name FROM kelas INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id WHERE jenjang.name = ?";
@@ -332,6 +337,7 @@ $stmt->close();
                                     Dashboard
                                 </a>
                                 <div class="sb-sidenav-menu-heading">Management Account</div>
+                                
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMasterData" aria-expanded="false" aria-controls="collapseMasterData">
                                     <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
                                         Master Data
@@ -371,6 +377,7 @@ $stmt->close();
                                     </nav>
                                 </div>
 
+                                <?php if($role == 'IT'){ ?> 
                                 <!-- Data iPad -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseiPad" aria-expanded="false" aria-controls="collapseiPad">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tablet-alt"></i></div>
@@ -383,6 +390,8 @@ $stmt->close();
                                         <a class="nav-link" href="data_ipad_siswa.php">Data iPad Siswa</a>
                                     </nav>
                                 </div>
+
+                                <?php } ?>
 
                                 <!-- Data eLearning -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseElearning" aria-expanded="false" aria-controls="collapseElearning">
@@ -397,11 +406,13 @@ $stmt->close();
                                     </nav>
                                 </div>
                                 
-                                <!-- <div class="sb-sidenav-menu-heading">Laporan</div>
-                                <a class="nav-link" href="tables.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                    Rekap data siswa
-                                </a> -->
+                                <?php if($role == 'IT'){ ?> 
+                                <div class="sb-sidenav-menu-heading">Akses Login</div>
+                                <a class="nav-link" href="data_login.php">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                    Data Login
+                                </a>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>

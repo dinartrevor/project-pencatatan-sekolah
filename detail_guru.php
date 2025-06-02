@@ -22,6 +22,7 @@
                                     <p><strong>Agama:</strong> <span id="t-agama"></span></p>
                                     <p><strong>Jenjang:</strong> <span id="t-jenjang"></span></p>
                                     <p><strong>Kelas:</strong> <span id="t-kelas"></span></p>
+                                    <p><strong>Tahun Ajaran:</strong> <span id="t-tahun-ajaran"></span></p>
                                     
                                 </div>
 
