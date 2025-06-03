@@ -135,9 +135,7 @@ while ($row = $result->fetch_assoc()) {
                                     </nav>
                                 </div>
 
-                                <?php } ?>
-
-                                <!-- Data eLearning -->
+                                 <!-- Data eLearning -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseElearning" aria-expanded="false" aria-controls="collapseElearning">
                                     <div class="sb-nav-link-icon"><i class="fas fa-laptop-code"></i></div>
                                     Data E-Learning
@@ -149,6 +147,10 @@ while ($row = $result->fetch_assoc()) {
                                         <a class="nav-link" href="data_elearning_siswa.php">E-Learning Siswa</a>
                                     </nav>
                                 </div>
+
+                                <?php } ?>
+
+                               
                                 
                                 <?php if($role == 'IT'){ ?> 
                                 <div class="sb-sidenav-menu-heading">Akses Login</div>
@@ -174,6 +176,7 @@ while ($row = $result->fetch_assoc()) {
                             <li class="breadcrumb-item active">Dashboard</li>
                         </ol>
                         <div class="row">
+                             <?php if($role == 'IT'){ ?> 
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
                                     <div class="card-body">Data Siswa</div>
@@ -240,6 +243,38 @@ while ($row = $result->fetch_assoc()) {
                                     </div>
                                 </div>
                             </div>
+                            <?php }elseif($role == 'ADMIN'){ ?>
+                            <div class="col-xl-6 col-md-6">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">Data Siswa</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <!-- Dropdown -->
+                                        <div class="dropdown">
+                                        <a class="small text-white dropdown-toggle" href="#" role="button" id="dropdownMenuSiswa" data-bs-toggle="dropdown" aria-expanded="false">
+                                        View Details
+                                        </a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuSiswa">
+                                                <li><a class="dropdown-item" href="jenjang_tka.php">Jenjang TK A</a></li>
+                                                <li><a class="dropdown-item" href="jenjang_tkb.php">Jenjang TK B</a></li>
+                                                <li><a class="dropdown-item" href="jenjang_sd.php">Jenjang SD</a></li>
+                                                <li><a class="dropdown-item" href="jenjangs_sd_g2.php">Jenjang SD (Grade 2)</a></li>
+                                                <li><a class="dropdown-item" href="jenjang_smp.php">Jenjang SMP</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">Data Guru</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="data_guru.php">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php } ?>
                         </div>
                         <div class="row">
                             <div class="card">

@@ -274,6 +274,18 @@ $stmt->close();
                                         <a class="nav-link" href="data_ipad_siswa.php">Data iPad Siswa</a>
                                     </nav>
                                 </div>
+                                  <!-- Data eLearning -->
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseElearning" aria-expanded="false" aria-controls="collapseElearning">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-laptop-code"></i></div>
+                                    Data E-Learning
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseElearning" aria-labelledby="headingFour" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="data_elearning_guru.php">E-Learning Guru</a>
+                                        <a class="nav-link" href="data_elearning_siswa.php">E-Learning Siswa</a>
+                                    </nav>
+                                </div>
 
                                 <?php } ?>
 

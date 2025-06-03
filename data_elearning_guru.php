@@ -198,9 +198,6 @@ $stmt->close();
                                         <a class="nav-link" href="data_ipad_siswa.php">Data iPad Siswa</a>
                                     </nav>
                                 </div>
-
-                                <?php } ?>
-
                                 <!-- Data eLearning -->
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseElearning" aria-expanded="false" aria-controls="collapseElearning">
                                     <div class="sb-nav-link-icon"><i class="fas fa-laptop-code"></i></div>
@@ -213,6 +210,10 @@ $stmt->close();
                                         <a class="nav-link" href="data_elearning_siswa.php">E-Learning Siswa</a>
                                     </nav>
                                 </div>
+
+                                <?php } ?>
+
+                              
                                 
                                 <?php if($role == 'IT'){ ?> 
                                 <div class="sb-sidenav-menu-heading">Akses Login</div>
