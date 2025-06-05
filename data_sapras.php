@@ -1,5 +1,5 @@
 <?php
-require_once 'function.php';
+require 'function.php';
 session_start();
 if(!$_SESSION['log']){
     header('location: login.php');
@@ -8,26 +8,33 @@ if(!$_SESSION['log']){
 $role = $_SESSION['role'];
 $nameRole= $_SESSION['name'];
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id'])) {
     try {
-        $name = $_POST['name'];
+        $nama_barang = $_POST['nama_barang'];
+        $merek = $_POST['merek'];
+        $qty = $_POST['qty'];
+        $keterangan = $_POST['keterangan'];
+        $image = '';
+        if (!empty($_FILES['image']['name'])) {
+			$image = uploadImage($_FILES['image']);
+        }
 
         global $conn;
 
-        $insertSql = "INSERT INTO jenjang (name) VALUES (?)";
+        $insertSql = "INSERT INTO sapras (nama_barang,merek,image,qty,keterangan) VALUES (?,?,?,?,?)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("s", $name);
+        $insertStmt->bind_param("sssis", $nama_barang, $merek, $image, $qty, $keterangan);
         $insertStmt->execute();
         $insertStmt->close();
 
-        $_SESSION['message_success'] = 'Data Jenjang Berhasil ditambahkan';
-        header("Location: data_jenjang.php");
+        $_SESSION['message_success'] = 'Data Sapras Berhasil ditambahkan';
+        header("Location: data_sapras.php");
         exit();
 
     } catch (Exception $e) {
+        var_dump($e);die;
         $_SESSION['message_error'] = 'Error: ' . $e->getMessage();
-        header("Location: data_jenjang.php");
+        header("Location: data_sapras.php");
         exit();
     }
 }
@@ -35,33 +42,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id']) {
     try {
         $id = $_POST['id'];
-        $name = $_POST['name'];
+        $nama_barang = $_POST['nama_barang'];
+        $merek = $_POST['merek'];
+        $qty = $_POST['qty'];
+        $keterangan = $_POST['keterangan'];
 
-        $updateSql = "UPDATE jenjang SET name=? WHERE id=?";
+        $getOldImageSql = "SELECT image FROM sapras WHERE id = ?";
+        $getOldImageStmt = $conn->prepare($getOldImageSql);
+        $getOldImageStmt->bind_param("i", $id);
+        $getOldImageStmt->execute();
+        $getOldImageResult = $getOldImageStmt->get_result();
+        $oldImageData = $getOldImageResult->fetch_assoc();
+        $oldImage = $oldImageData['image'];
+        $getOldImageStmt->close();
+
+        
+        if (!empty($_FILES['image']['name'])) {
+			$image = uploadImage($_FILES['image']);
+        }else{
+             $image = $oldImage;
+        }
+
+        $updateSql = "UPDATE sapras SET nama_barang=?, merek=?, image=?, qty=?, keterangan=? WHERE id=?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("si", $name, $id);
+        $updateStmt->bind_param("sssssi", $nama_barang,$merek, $image, $qty, $keterangan, $id);
         $updateStmt->execute();
         $updateStmt->close();
 
 
-        $_SESSION['message_success'] = 'Data Jenjang Berhasil diubah';
-        header("Location: data_jenjang.php");
+        $_SESSION['message_success'] = 'Data Sapras Berhasil diubah';
+        header("Location: data_sapras.php");
         exit();
 
     } catch (Exception $e) {
         $_SESSION['message_error'] = 'Error: ' . $e->getMessage();
-        header("Location: data_jenjang.php");
+        header("Location: data_sapras.php");
         exit();
     }
 }
 
-$sql = "SELECT * FROM jenjang";
+function uploadImage($file)
+{
+    $target_dir = "uploads/";
+	$randomString = str_replace('.', '', uniqid('', true));
+	$file_name = $randomString . '_' . uniqid() . '.' . pathinfo($file["name"], PATHINFO_EXTENSION);
+    $target_file = $target_dir .  $file_name;
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $check = getimagesize($file["tmp_name"]);
+	
+    if ($check !== false) {
+		$uploadOk = 1;
+    } else {
+		$uploadOk = 0;
+    }
+    if ($file["size"] > 3500000) {
+		$uploadOk = 0;
+    }
+    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+        $uploadOk = 0;
+    }
+
+    if ($uploadOk == 0) {
+        return '';
+    } else {
+        if (move_uploaded_file($file["tmp_name"], $target_file)) {
+            return $file_name;
+        } else {
+            return '';
+        }
+    }
+}
+
+$sql = "SELECT * FROM sapras";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
-$dataJenjang = [];
+$dataSapras = [];
 while ($row = $result->fetch_assoc()) {
-    $dataJenjang[] = $row;
+    $dataSapras[] = $row;
 }
 
 $stmt->close();
@@ -77,7 +136,7 @@ $stmt->close();
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content=" Al-Azhar Cairo Baturaja" />
         <meta name="author" content=" Al-Azhar Cairo Baturaja" />
-        <title>Data Master Jenjang</title>
+        <title>Data Sapras</title>
         <link rel="shortcut icon" href="assets/img/logoalazca.png" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
@@ -213,7 +272,8 @@ $stmt->close();
                                         <a class="nav-link" href="data_ipad_siswa.php">Data iPad Siswa</a>
                                     </nav>
                                 </div>
-                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseElearning" aria-expanded="false" aria-controls="collapseElearning">
+                                  <!-- Data eLearning -->
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseElearning" aria-expanded="false" aria-controls="collapseElearning">
                                     <div class="sb-nav-link-icon"><i class="fas fa-laptop-code"></i></div>
                                     Data E-Learning
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -224,7 +284,7 @@ $stmt->close();
                                         <a class="nav-link" href="data_elearning_siswa.php">E-Learning Siswa</a>
                                     </nav>
                                 </div>
-                                <a class="nav-link" href="data_sapras.php">
+                                  <a class="nav-link" href="data_sapras.php">
                                     <div class="sb-nav-link-icon">
                                         <i class="fas fa-boxes-stacked"></i>
                                     </div>
@@ -233,9 +293,6 @@ $stmt->close();
 
                                 <?php } ?>
 
-                                <!-- Data eLearning -->
-                               
-                                
                                 <?php if($role == 'IT'){ ?> 
                                 <div class="sb-sidenav-menu-heading">Akses Login</div>
                                 <a class="nav-link" href="data_login.php">
@@ -250,15 +307,15 @@ $stmt->close();
                         <div class="small">Logged in as:</div>
                        <?= $nameRole.' - '.$role ?>
                     </div>
-                </nav>
+                </nav>  
             </div>
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Data Master Jenjang</h1>
+                        <h1 class="mt-4">Data Sapras</h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="data_jenjang.php">Master Jenjang</a></li>
-                            <li class="breadcrumb-item active">List Master Jenjang</li>
+                            <li class="breadcrumb-item"><a href="data_login.php">Sapras</a></li>
+                            <li class="breadcrumb-item active">List Sapras</li>
                         </ol>
                         <div class="card mb-4">
                             <div class="card-body">
@@ -268,11 +325,17 @@ $stmt->close();
                                         <!-- Button to Open the Modal -->
                                         <div class="col-lg-12 d-flex justify-content-between align-items-center">
                                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-create">
-                                                <i class="fas fa-plus"></i> Tambah Data Master Jenjang
+                                                    <i class="fas fa-plus"></i> Tambah Data Sapras
                                                 </button>
-                                                <a href="<?= 'export_jenjang.php' ?>" id="exportExcelBtn" class="btn btn-success">
-                                                <i class="fa fa-file-excel"></i> Export to Excel
-                                                </a>
+                                                <div>
+                                                    <a href="<?= 'export_sapras.php' ?>" id="exportExcelBtn" class="btn btn-success">
+                                                    <i class="fa fa-file-excel"></i> Export to Excel
+                                                    </a>
+                                                    <a href="<?= 'export_pdf_sapras.php' ?>" id="exportPDFBtn" class="btn btn-danger">
+                                                        <i class="fa fa-file-pdf"></i> Export to PDF
+                                                    </a>
+                                                </div>
+                                                
                                         </div>
                                     </div>
                                 </div>
@@ -281,20 +344,27 @@ $stmt->close();
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Nama</th>
+                                                <th>Nama Barang</th>
+                                                <th>Merek</th>
+                                                <th>QTY</th>
+                                                <th>Keterangan</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                                foreach ($dataJenjang as $key => $data) {
+                                                foreach ($dataSapras as $key => $data) {
                                             ?>
                                             <tr>
                                                 <td><?= $key + 1; ?></td>
-                                                <td><?= $data['name']; ?></td>
+                                                <td><?= $data['nama_barang']; ?></td>
+                                                <td><?= $data['merek']; ?></td>
+                                                <td><?= $data['qty']; ?></td>
+                                                <td><?= $data['keterangan']; ?></td>
                                                 <td>
-                                                    <a href="javascript:void(0)" data-url="<?= 'show_jenjang.php' ?>" data-id="<?= $data['id'] ?>" class="edit btn btn-info btn-sm text-light "> <i class="fas fa-edit"></i></a>
-                                                    <a href="javascript:void(0)" data-url="<?= 'delete_jenjang.php' ?>" data-id="<?= $data['id'] ?>" class="delete btn btn-danger btn-sm"> <i class="fas fa-times"></i></a>
+                                                    <a href="javascript:void(0)" data-url="<?= 'show_sapras.php' ?>" data-id="<?= $data['id'] ?>" class="edit btn btn-info btn-sm text-light "> <i class="fas fa-edit"></i></a>
+                                                    <a href="javascript:void(0)" data-url="<?= 'show_sapras.php' ?>" data-id="<?= $data['id'] ?>" class="detail btn btn-primary btn-sm"> <i class="fas fa-search"></i></a>
+                                                    <a href="javascript:void(0)" data-url="<?= 'delete_sapras.php' ?>" data-id="<?= $data['id'] ?>" class="delete btn btn-danger btn-sm"> <i class="fas fa-times"></i></a>
                                                 </td>
                                             </tr>
                                             <?php
@@ -306,8 +376,9 @@ $stmt->close();
                             </div>
                         </div>
                 </main>
-                <?php include 'create_jenjang.php' ?>
-                <?php include 'edit_jenjang.php' ?>
+                <?php include 'create_sapras.php' ?>
+                <?php include 'detail_sapras.php' ?>
+                <?php include 'edit_sapras.php' ?>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
@@ -335,6 +406,19 @@ $stmt->close();
                     <?php unset($_SESSION['message_success']); ?>
                 <?php endif; ?>
 
+                $('.show-hide-password').on('click', function() {
+                    let passwordInput = $('.password');
+                    let eyeIcon = $(this).find('i');
+
+                    if (passwordInput.attr('type') === 'password') {
+                        passwordInput.attr('type', 'text');
+                        eyeIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                    } else {
+                        passwordInput.attr('type', 'password');
+                        eyeIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                    }
+                });
+
                 $('#datatablesSimple tbody').on('click', '.edit', function () {
                     let id = $(this).data('id');
                     let url_hit = $(this).data('url');
@@ -348,9 +432,39 @@ $stmt->close();
                        response = JSON.parse(response);
                        if(response.status){
                             let data = response.data;
-                            $('#id_edit').val(data.id);
-                            $('#name_edit').val(data.name);
+                            $('#idsapras').val(data.id);
+                            $('#nama_barang_edit').val(data.nama_barang);
+                            $('#merek_edit').val(data.merek);
+                            $('#kode_edit').val(data.kode);
+                            $('#qty_edit').val(data.qty);
+                            $('#keterangan_edit').val(data.keterangan); 
                             $('#modal-edit').modal('show');
+                        }
+                    })
+                    .fail(function () {
+                        console.log("error");
+                    });
+                });
+
+                $('#datatablesSimple tbody').on('click', '.detail', function () {
+                    let id = $(this).data('id');
+                    let url_hit = $(this).data('url');
+                    $.ajax({
+                        url: url_hit,
+                        type: 'GET',
+                        data : {
+                            id : id
+                        }
+                    }).done(function (response) {
+                       response = JSON.parse(response);
+                       if(response.status){
+                            let data = response.data;
+                            $('#t-nama-barang').text(data.nama_barang);
+                            $('#t-merek').text(data.merek);
+                            $('#t-jumlah').text(data.qty);
+                            $('#t-keterangan').text(data.keterangan);
+                            $("#photo-barang").attr('src', `${'uploads/'+data.image}`)
+                            $('#modal-detail').modal('show');
                         }
                     })
                     .fail(function () {
@@ -397,6 +511,22 @@ $stmt->close();
                         }
                     });
                 });
+
+                 $('#datatablesSimple tbody').on('click', '.show-password', function (e) {
+                    e.preventDefault();
+                    let passwordSpan = $(this).siblings('span');
+                    let password = $(this).data('password');
+
+                    if (passwordSpan.text() === '*******') {
+                        passwordSpan.text(password);
+                        $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+                        $(this).attr('title', 'Sembunyikan Password');
+                    } else {
+                        passwordSpan.text('*******');
+                        $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+                        $(this).attr('title', 'Lihat Password');
+                    }
+                })
             });
             
         </script>

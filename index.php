@@ -147,11 +147,17 @@ while ($row = $result->fetch_assoc()) {
                                         <a class="nav-link" href="data_elearning_siswa.php">E-Learning Siswa</a>
                                     </nav>
                                 </div>
+                                <a class="nav-link" href="data_sapras.php">
+                                    <div class="sb-nav-link-icon">
+                                        <i class="fas fa-boxes-stacked"></i>
+                                    </div>
+                                    Data Sapras IT
+                                </a>
 
                                 <?php } ?>
+                              
 
-                               
-                                
+                            
                                 <?php if($role == 'IT'){ ?> 
                                 <div class="sb-sidenav-menu-heading">Akses Login</div>
                                 <a class="nav-link" href="data_login.php">
