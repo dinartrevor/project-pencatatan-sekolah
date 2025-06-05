@@ -136,7 +136,7 @@ $stmt->close();
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content=" Al-Azhar Cairo Baturaja" />
         <meta name="author" content=" Al-Azhar Cairo Baturaja" />
-        <title>Data Sapras</title>
+        <title>Data Sarpras</title>
         <link rel="shortcut icon" href="assets/img/logoalazca.png" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
@@ -286,9 +286,9 @@ $stmt->close();
                                 </div>
                                   <a class="nav-link" href="data_sapras.php">
                                     <div class="sb-nav-link-icon">
-                                        <i class="fas fa-boxes-stacked"></i>
+                                        <i class="fas fa-desktop"></i>
                                     </div>
-                                    Data Sapras IT
+                                    Data Sarpras IT
                                 </a>
 
                                 <?php } ?>
@@ -312,10 +312,10 @@ $stmt->close();
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Data Sapras</h1>
+                        <h1 class="mt-4">Data Sarpras</h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="data_login.php">Sapras</a></li>
-                            <li class="breadcrumb-item active">List Sapras</li>
+                            <li class="breadcrumb-item"><a href="data_login.php">Sarpras</a></li>
+                            <li class="breadcrumb-item active">List Sarpras</li>
                         </ol>
                         <div class="card mb-4">
                             <div class="card-body">
@@ -325,7 +325,7 @@ $stmt->close();
                                         <!-- Button to Open the Modal -->
                                         <div class="col-lg-12 d-flex justify-content-between align-items-center">
                                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-create">
-                                                    <i class="fas fa-plus"></i> Tambah Data Sapras
+                                                    <i class="fas fa-plus"></i> Tambah Data Sarpras
                                                 </button>
                                                 <div>
                                                     <a href="<?= 'export_sapras.php' ?>" id="exportExcelBtn" class="btn btn-success">

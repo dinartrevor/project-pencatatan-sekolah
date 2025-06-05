@@ -398,9 +398,9 @@ $stmt->close();
                                 </div>
                                  <a class="nav-link" href="data_sapras.php">
                                     <div class="sb-nav-link-icon">
-                                        <i class="fas fa-boxes-stacked"></i>
+                                        <i class="fas fa-desktop"></i>
                                     </div>
-                                    Data Sapras IT
+                                    Data Sarpras IT
                                 </a>
 
                                 <?php } ?>
