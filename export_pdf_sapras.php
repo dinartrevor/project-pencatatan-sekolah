@@ -15,21 +15,23 @@ $data = [];
 while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
-
 $stmt->close();
 
 function getImageBase64Src($imageFileName) {
-    $imageDir = __DIR__ . DIRECTORY_SEPARATOR;
-    $imagePath = $imageDir . $imageFileName;
-    if (!file_exists($imagePath)) {
-        error_log("Warning: Gambar tidak ditemukan di path: " . $imagePath);
-        return '';
+    if(!empty($imageFileName)){
+        $imageDir = __DIR__ . DIRECTORY_SEPARATOR;
+        $imagePath = $imageDir . $imageFileName;
+    
+        if (!file_exists($imagePath)) {
+            error_log("Warning: Gambar tidak ditemukan di path: " . $imagePath);
+            return '';
+        }
+    
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $imageMimeType = mime_content_type($imagePath);
+        return 'data:' . $imageMimeType . ';base64,' . $imageData;
     }
-
-    $imageData = base64_encode(file_get_contents($imagePath));
-    $imageMimeType = mime_content_type($imagePath);
-    return 'data:' . $imageMimeType . ';base64,' . $imageData;
-
+    return false;
 }
 
 $html = '
@@ -71,10 +73,14 @@ $html = '
         <tbody>';
 
 foreach ($data as $key => $item) {
-    $item['image'] = 'uploads/'.$item['image'];
+    if(!empty($item['image'])){
+        $item['image'] = 'uploads/'.$item['image'];
+    }else{
+        $item['image'] = null;
+
+    }
 
     $saprasImageSrc = getImageBase64Src($item['image']);
-
     $html .= '
             <tr>
                 <td>' . $key + 1 . '</td>
@@ -98,7 +104,6 @@ $html .= '
 
     <div class="footer">
         <p>Laporan ini dibuat secara otomatis oleh sistem.</p>
-        <p>Halaman 1 dari 1</p>
     </div>
 </body>
 </html>';
