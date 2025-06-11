@@ -29,7 +29,7 @@ $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
 // Definisikan header kolom (Bahasa Indonesia)
-$header = ['No', 'Nama Guru', 'NIK', 'Tempat Lahir', 'Tanggal Lahir', 'Agama', 'No. Handphone', 'Mata Pelajaran','Pendidikan Terakhir', 'Jenjang', 'Kelas', 'Jabatan', 'Jenis Kelamin', 'Status']; // Contoh header, sesuaikan dengan kolom tabel Anda
+$header = ['No', 'Nama Guru', 'NIK', 'Tempat Lahir', 'Tanggal Lahir', 'Agama', 'No. Handphone', 'Mata Pelajaran','Pendidikan Terakhir', 'Jenjang', 'Kelas', 'Jabatan', 'Jenis Kelamin', 'Status', 'Wali Kelas']; // Contoh header, sesuaikan dengan kolom tabel Anda
 $headerRow = 1; // Baris untuk header
     
 
@@ -60,6 +60,7 @@ foreach ($data as $key => $row) {
     $rowDataToWrite[] = $row['jabatan'];
     $rowDataToWrite[] = $row['jenis_kelamin'];
     $rowDataToWrite[] = $row['status'];
+    $rowDataToWrite[] = $row['is_wali_kelas'] ?? 'Tidak';
     foreach ($rowDataToWrite as $value) {
         $sheet->setCellValue($col . $rowNumber, $value);
         $col++;

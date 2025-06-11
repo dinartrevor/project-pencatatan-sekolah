@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_siswa'])) {
         exit();
 
     } catch (Exception $e) {
-       
+        var_dump($e);die;
         $_SESSION['message_error'] = 'Error: ' . $e->getMessage();
         header("Location: jenjang_smp.php");
         exit();
@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_siswa']) {
         exit();
 
     } catch (Exception $e) {
-
+var_dump($e);die;
         $_SESSION['message_error'] = 'Error: ' . $e->getMessage();
         header("Location: jenjang_smp.php");
         exit();

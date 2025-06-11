@@ -63,20 +63,28 @@
                             <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
                             <input type="text" class="form-control" name="tahun_ajaran" id="tahun_ajaran_edit" autocomplete="off" placeholder="Tahun Ajaran" required>
                         </div>
-                         <div class="col-md-4 mt-3">
+                         <div class="col-md-3 mt-3">
                             <label for="agama" class="form-label">Agama</label>
                             <input type="text" class="form-control" name="agama" id="agama_edit" autocomplete="off" placeholder="Agama" required>
                         </div>
-                        <div class="col-md-4 mt-3">
+                        <div class="col-md-3 mt-3">
                             <label for="image" class="form-label">Photo</label>
                             <input type="file" class="form-control" name="image" id="image_edit"  accept="image/*">
                         </div>
-                        <div class="col-md-4 mt-3">
+                        <div class="col-md-3 mt-3">
                             <label for="status" class="form-label">Status</label>
                             <select name="status" id="status_edit" class="form-control">
                                 <option value="">Pilih Status</option>
                                 <option value="Menikah">Menikah</option>
                                 <option value="Belum Menikah">Belum Menikah</option>
+                            </select>
+                        </div>
+                         <div class="col-md-3 mt-3">
+                            <label for="is_wali_kelas" class="form-label">Apakah Guru Ini Wali Kelas ?</label>
+                            <select name="is_wali_kelas" id="is_wali_kelas_edit" class="form-control" required>
+                                <option value="">Pilih Apakah Guru Ini Wali Kelas ?</option>
+                                <option value="YA">YA</option>
+                                <option value="TIDAK">TIDAK</option>
                             </select>
                         </div>
                     </div>

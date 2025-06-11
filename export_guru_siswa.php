@@ -21,7 +21,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $kelas = $result->fetch_assoc();
 
-$sqlGuru = "SELECT * from guru WHERE guru.kelas_id = ?";
+$sqlGuru = "SELECT * from guru WHERE guru.kelas_id = ? AND is_wali_kelas = 'YA'";
 $stmt = $conn->prepare($sqlGuru);
 $stmt->bind_param("s", $kelasId);
 $stmt->execute();

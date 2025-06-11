@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         global $conn;
 
 
-        $sql = "SELECT * from guru WHERE guru.kelas_id = ?";
+        $sql = "SELECT * from guru WHERE guru.kelas_id = ? AND is_wali_kelas = 'YA'";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $id);
         $stmt->execute();

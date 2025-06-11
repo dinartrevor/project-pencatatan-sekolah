@@ -23,6 +23,7 @@
                                     <p><strong>Jenjang:</strong> <span id="t-jenjang"></span></p>
                                     <p><strong>Kelas:</strong> <span id="t-kelas"></span></p>
                                     <p><strong>Tahun Ajaran:</strong> <span id="t-tahun-ajaran"></span></p>
+                                    <p><strong>Wali Kelas:</strong> <span id="t-wali-kelas"></span></p>
                                     
                                 </div>
 

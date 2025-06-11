@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_guru'])) {
         $agama = $_POST['agama'];
         $kelas_id = $_POST['kelas_id'];
         $tahun_ajaran = $_POST['tahun_ajaran'];
+        $is_wali_kelas = $_POST['is_wali_kelas'];
         $image = '';
         if (!empty($_FILES['image']['name'])) {
 			$image = uploadImage($_FILES['image']);
@@ -57,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['id_guru'])) {
             exit();
         }
 
-        $insertSql = "INSERT INTO guru (nama_guru, nik_guru, nomor_handphone, mapel, pendidikan_terakhir, jabatan, jenis_kelamin, status, tempat, tanggal_lahir, agama, image, kelas_id, tahun_ajaran) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertSql = "INSERT INTO guru (nama_guru, nik_guru, nomor_handphone, mapel, pendidikan_terakhir, jabatan, jenis_kelamin, status, tempat, tanggal_lahir, agama, image, kelas_id, tahun_ajaran, is_wali_kelas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("ssssssssssssis", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id, $tahun_ajaran);
+        $insertStmt->bind_param("ssssssssssssiss", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id, $tahun_ajaran, $is_wali_kelas);
         $insertStmt->execute();
         $insertStmt->close();
 
@@ -90,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_guru']) {
         $agama = $_POST['agama'];
         $kelas_id = $_POST['kelas_id'];
         $tahun_ajaran = $_POST['tahun_ajaran'];
+        $is_wali_kelas = $_POST['is_wali_kelas'];
 
         $getOldImageSql = "SELECT image FROM guru WHERE id_guru = ?";
         $getOldImageStmt = $conn->prepare($getOldImageSql);
@@ -108,9 +110,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id_guru']) {
         }
 
 
-        $updateSql = "UPDATE guru SET nama_guru=?, nik_guru=?, nomor_handphone=?, mapel=?, pendidikan_terakhir=?, jabatan=?, jenis_kelamin=?, status=?, tempat=?, tanggal_lahir=?, agama=?, image=?, kelas_id=?, tahun_ajaran=? WHERE id_guru=?";
+        $updateSql = "UPDATE guru SET nama_guru=?, nik_guru=?, nomor_handphone=?, mapel=?, pendidikan_terakhir=?, jabatan=?, jenis_kelamin=?, status=?, tempat=?, tanggal_lahir=?, agama=?, image=?, kelas_id=?, tahun_ajaran=?, is_wali_kelas=? WHERE id_guru=?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("ssssssssssssisi", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id, $tahun_ajaran, $id);
+        $updateStmt->bind_param("ssssssssssssissi", $nama_guru, $nik_guru, $nomor_handphone, $mapel, $pendidikan_terakhir, $jabatan, $jenis_kelamin, $status, $tempat, $tanggal_lahir, $agama, $image, $kelas_id, $tahun_ajaran, $is_wali_kelas, $id);
         $updateStmt->execute();
         $updateStmt->close();
 
@@ -486,6 +488,8 @@ $stmt->close();
                             $('#tahun_ajaran_edit').val(data.tahun_ajaran);
                             let html_jenis_kelamin = `<option value="Laki-Laki" ${data.jenis_kelamin == 'Laki-Laki' ? 'selected' : ''}>Laki-Laki</option>`;
                                 html_jenis_kelamin += `<option value="Perempuan" ${data.jenis_kelamin == 'Perempuan' ? 'selected' : ''}>Perempuan</option>`;
+                            let html_wali_kelas = `<option value="">Pilih Apakah Guru Ini Wali Kelas ?</option><option value="YA" ${data.jenis_kelamin == 'YA' ? 'selected' : ''}>YA</option>`;
+                                html_wali_kelas += `<option value="TIDAK" ${data.jenis_kelamin == 'TIDAK' ? 'selected' : ''}>TIDAK</option>`;
                             let html_status = `<option value="Menikah" ${data.status == 'Menikah' ? 'selected' : ''}>Menikah</option>`;
                                 html_status += `<option value="Belum Menikah" ${data.status == 'Belum Menikah' ? 'selected' : ''}>Belum Menikah</option>`;
 
@@ -496,6 +500,7 @@ $stmt->close();
                                 });
                             }
                             $('#jenis_kelamin_edit').html(html_jenis_kelamin);
+                            $('#is_wali_kelas_edit').html(html_wali_kelas);
                             $('#jenjang_id_edit').html(html);
                             $('#status_edit').html(html_status);
                             $('#kelas_selected').val(data.kelas_id);
@@ -541,6 +546,7 @@ $stmt->close();
                             $('#t-jenjang').text(data.nama_jenjang);
                             $('#t-kelas').text(data.nama_kelas);
                             $('#t-tahun-ajaran').text(data.tahun_ajaran);
+                            $('#t-wali-kelas').text(data.is_wali_kelas ?? 'Tidak');
                             $('#photo-profil').attr('src', `${'uploads/'+data.image}`)
                             $('#modal-detail').modal('show');
                         }
