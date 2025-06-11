@@ -488,8 +488,8 @@ $stmt->close();
                             $('#tahun_ajaran_edit').val(data.tahun_ajaran);
                             let html_jenis_kelamin = `<option value="Laki-Laki" ${data.jenis_kelamin == 'Laki-Laki' ? 'selected' : ''}>Laki-Laki</option>`;
                                 html_jenis_kelamin += `<option value="Perempuan" ${data.jenis_kelamin == 'Perempuan' ? 'selected' : ''}>Perempuan</option>`;
-                            let html_wali_kelas = `<option value="">Pilih Apakah Guru Ini Wali Kelas ?</option><option value="YA" ${data.jenis_kelamin == 'YA' ? 'selected' : ''}>YA</option>`;
-                                html_wali_kelas += `<option value="TIDAK" ${data.jenis_kelamin == 'TIDAK' ? 'selected' : ''}>TIDAK</option>`;
+                            let html_wali_kelas = `<option value="">Pilih Apakah Guru Ini Wali Kelas ?</option><option value="YA" ${data.is_wali_kelas == 'YA' ? 'selected' : ''}>YA</option>`;
+                                html_wali_kelas += `<option value="TIDAK" ${data.is_wali_kelas == 'TIDAK' ? 'selected' : ''}>TIDAK</option>`;
                             let html_status = `<option value="Menikah" ${data.status == 'Menikah' ? 'selected' : ''}>Menikah</option>`;
                                 html_status += `<option value="Belum Menikah" ${data.status == 'Belum Menikah' ? 'selected' : ''}>Belum Menikah</option>`;
 
