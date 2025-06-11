@@ -31,7 +31,7 @@ CREATE TABLE `dataelearning` (
   `type` enum('Guru','Siswa') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `mapel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_elearning`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +39,7 @@ CREATE TABLE `dataelearning` (
 --
 
 /*!40000 ALTER TABLE `dataelearning` DISABLE KEYS */;
+INSERT INTO `dataelearning` VALUES (1,'zuliyanti529@gmail.com','alazcabta12345','Zuliyanti','7 Ar-Rahman','Guru','Informatika');
 /*!40000 ALTER TABLE `dataelearning` ENABLE KEYS */;
 
 --
@@ -60,6 +61,7 @@ CREATE TABLE `dataipad` (
   `serial_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `kode_restrict` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `type` enum('Guru','Siswa') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `image` text COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`id_apple`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -103,7 +105,7 @@ CREATE TABLE `guru` (
 --
 
 /*!40000 ALTER TABLE `guru` DISABLE KEYS */;
-INSERT INTO `guru` VALUES (1,'lisa','bbbb','bfjghreuerhtureut','fnjehrthehte','Perempuan','12345678','rhtgrgy4egt4e','Belum Menikah','abcdghhk','1999-01-02','islam','',1,'2020-2021'),(2,'cahya','1234567890','jtyjyhjtryhrj','d3 akuntansi','Perempuan','345678654','wali kelas','Belum Menikah','gunung ','2000-01-03','islam','',1,'2025/2026');
+INSERT INTO `guru` VALUES (1,'Moudy Hadillah Atani, S.Pd','160108690502001','-','S1 Administrasi Pendidikan','Perempuan','082376007084','Staff Adminsitrasi','Belum Menikah','Baturaja','1999-01-02','Islam','6848e0ccb6153901738903_6848e0ccb616b.jpeg',3,'2025-2026'),(2,'Cahya Padma Sari, S.Tr.Ikom','160108090050002','Informatika','d3 akuntansi','Perempuan','083173692431','Wali Kelas','Belum Menikah','Raksa Jiwa','2002-01-03','Islam','6848e1b1a0b33147322028_6848e1b1a0b47.jpeg',7,'2025/2026');
 /*!40000 ALTER TABLE `guru` ENABLE KEYS */;
 
 --
@@ -280,4 +282,4 @@ INSERT INTO `siswa` VALUES (1,'abel','123','islam','baturaja','2020-06-02',5,'Pe
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-11  8:34:34
+-- Dump completed on 2025-06-11  9:20:53
