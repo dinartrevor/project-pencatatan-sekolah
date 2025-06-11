@@ -9,11 +9,11 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Font;
 
 $sql = "SELECT guru.id_guru, guru.nama_guru, guru.nik_guru, guru.mapel, guru.pendidikan_terakhir,
-            guru.jenis_kelamin, guru.nomor_handphone, guru.jabatan,  guru.status, guru.tempat, guru.tanggal_lahir,
+            guru.jenis_kelamin, guru.nomor_handphone, guru.jabatan,  guru.status, guru.tempat, guru.tanggal_lahir,guru.is_wali_kelas,
             guru.agama, guru.image, guru.kelas_id, kelas.name as nama_kelas, jenjang.id as jenjang_id, jenjang.name as nama_jenjang
             FROM guru
-            INNER JOIN kelas ON guru.kelas_id = kelas.id
-            INNER JOIN jenjang ON kelas.jenjang_id = jenjang.id";
+            LEFT JOIN kelas ON guru.kelas_id = kelas.id
+            LEFT JOIN jenjang ON kelas.jenjang_id = jenjang.id";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -55,8 +55,8 @@ foreach ($data as $key => $row) {
     $rowDataToWrite[] = $row['nomor_handphone'];
     $rowDataToWrite[] = $row['mapel'];
     $rowDataToWrite[] = $row['pendidikan_terakhir'];
-    $rowDataToWrite[] = $row['nama_jenjang'];
-    $rowDataToWrite[] = $row['nama_kelas'];
+    $rowDataToWrite[] = $row['nama_jenjang'] ?? '-';
+    $rowDataToWrite[] = $row['nama_kelas'] ?? '-';
     $rowDataToWrite[] = $row['jabatan'];
     $rowDataToWrite[] = $row['jenis_kelamin'];
     $rowDataToWrite[] = $row['status'];
