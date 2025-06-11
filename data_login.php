@@ -230,6 +230,12 @@ $stmt->close();
                                         <a class="nav-link" href="data_elearning_siswa.php">E-Learning Siswa</a>
                                     </nav>
                                 </div>
+                                <a class="nav-link" href="data_sapras.php">
+                                    <div class="sb-nav-link-icon">
+                                        <i class="fas fa-desktop"></i>
+                                    </div>
+                                    Data Sarpras IT
+                                </a>
 
                                 <?php } ?>
 

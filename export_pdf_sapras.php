@@ -53,10 +53,10 @@ $html = '
     </style>
 </head>
 <body>
-    <h1>Laporan Data Sapras IT</h1>
+    <h1>Laporan Data Sarpras IT</h1>
     <p style="text-align: center; color: #666;">Dibuat pada: ' . date('d F Y H:i:s') . '</p>
 
-    <h2>Daftar Sapras IT</h2>
+    <h2>Daftar Sarpras IT</h2>
     <table>
         <thead>
             <tr>
